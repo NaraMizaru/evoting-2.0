@@ -1,6 +1,10 @@
 @extends('layouts.auth')
 @section('title', 'Login')
 
+@push('css')
+  {{-- Custom CSS for This Page --}}
+@endpush
+
 @section('content')
   <div class="container">
     <div class="row justify-content-center">
@@ -15,14 +19,20 @@
                   <div class="p-5 d-flex align-items-center h-100">
                     <div class="text-left">
                       <h1 class="h4 text-gray-100">Simple E-Vote</h1>
-                      <p class="text-gray-100 mt-2">For SMKN2SMI</p>
+                      <p class="text-gray-100 mt-2">For SMK Negeri 2 Sukabumi</p>
                     </div>
                   </div>
               </div>
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h3 text-gray-900 mb-4">Login | E-voting</h1>
+                    <h1 class="h3 text-gray-900 mb-4">Login | 
+                      @if ($adminLoggedIn)
+                          Admin
+                      @else
+                          E-Voting <sup>2.0</sup>
+                      @endif
+                    </h1>
 
                     @if ($errors->any())
                       <div class="text-left alert alert-danger border-left-danger" role="alert">
@@ -66,3 +76,7 @@
     </div>
   </div>
 @endsection
+
+@push('js')
+  {{-- Custom JS for This Page --}}
+@endpush

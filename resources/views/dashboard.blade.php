@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
 
+@push('css')
+  {{-- Custom CSS for This Page --}}
+@endpush
+
 @section('content')
   <div class="row">
     @if (Session::has('status'))
@@ -22,3 +26,7 @@
     </div>
   </div>
 @endsection
+
+@push('js')
+  {{-- Custom JS for This Page --}}
+@endpush
