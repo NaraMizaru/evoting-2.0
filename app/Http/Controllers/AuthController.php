@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthController extends Controller
 {
@@ -28,23 +29,37 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-        $admin = User::where('role', 'admin')->first();
-        if ($request->username == $admin->username && $request->password == $admin->unencrypted_password && $request->has('admin')) {
-            $auth = Auth::attempt($request->only(['username', 'password']));
-            if ($auth) {
-                return redirect()->route('admin.dashboard');
+        if ($request->has('admin')) {
+            $credentials = $request->only(['username', 'password']);
+            $auth = Auth::attempt($credentials);
+            
+            if ($auth && Auth::user()->role == 'admin') {
+                $user = Auth::user();
+                Alert::success('Login successful', 'Happy Voting')->persistent(true);
+                return redirect()->route('admin.dashboard')->with('status', 'Welcome to the dashboard, ' . $user->fullname);
             } else {
                 return redirect()->back()->with('error', 'Username or password incorrect');
             }
-        } else if ($request->username == $admin->username && $request->password == $admin->unencrypted_password && !$request->has('admin')) {
+        } else {
             return redirect()->back()->with('error', 'Username or password incorrect');
         }
 
         $auth = Auth::attempt($request->only(['username', 'password']));
         if ($auth) {
-            return redirect()->route('dashboard');
+            return redirect()->route('dashboard')->with('status', 'Welcome to the dashboard, ' . $user->fullname);;
         } else {
             return redirect()->back()->with('error', 'Username or password incorrect');
         }
+    }
+
+    public function logout()
+    {
+        $authCheck = Auth::check();
+        if (!$authCheck) {
+            abort(401);
+        }
+
+        Auth::logout();
+
     }
 }

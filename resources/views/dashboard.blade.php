@@ -4,8 +4,10 @@
 @section('content')
   <div class="row">
     @if (Session::has('status'))
-      <div class="alert alert-success border-left-success" role="alert">
-        {{ session('status') }}
+      <div class="col-12">
+        <div class="alert alert-success border-left-success" role="alert">
+          {{ session('status') }}
+        </div>
       </div>
     @endif
     <div class="col-12">

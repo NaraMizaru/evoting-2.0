@@ -13,6 +13,7 @@
   <title>@yield('title') | {{ config('app.name') }}</title>
 </head>
 <body id="page-top">
+  @include('sweetalert::alert')
   <div id="wrapper">
     @include('template.sidebar')
 
@@ -29,9 +30,9 @@
   </div>
 
 
-  <script src="{{ asset('vendors/jquery/jquery.min.js') }}"></script>
-  <script src="{{ asset('vendors/bootstrap/js/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('vendors/jquery-easing/jquery-easing.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery-easing/jquery-easing.min.js') }}"></script>
   <script src="{{ asset('js/sb-admin.min.js') }}"></script>
 </body>
 </html>

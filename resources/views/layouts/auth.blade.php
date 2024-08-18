@@ -20,10 +20,11 @@
   </style>
 </head>
 <body class="min-vh-100 d-flex justify-content-center align-items-center bg-login">
+  @include('sweetalert::alert')
   @yield('content')
 
-  <script src="{{ asset('vendors/jquery/jquery.min.js') }}"></script>
-  <script src="{{ asset('vendors/bootstrap/js/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
   <script src="{{ asset('js/sb-admin.min.js') }}"></script>
 </body>
 </html>

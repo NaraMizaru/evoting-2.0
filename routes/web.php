@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboarController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,6 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'indexLogin'])->name('view.login');
 Route::post('/login', [AuthController::class, 'login'])->name('post.login');
 
-Route::get('/dashboard', function() {
-    return view('dashboard', [], ['menu_type' => 'dashboard']);
+Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function() {
+    Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('admin.dashboard');
 });
