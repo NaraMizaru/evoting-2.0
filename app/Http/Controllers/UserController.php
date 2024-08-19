@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Imports\UserImport;
+use App\Models\Kelas;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+
+class UserController extends Controller
+{
+    public function manageUser()
+    {
+        $user = User::where('role', '!=', 'admin')->orderBy('kelas_id', 'asc')->get();
+        $kelas = Kelas::orderBy('name', 'asc')->get();
+
+        confirmDelete('Hapus User', 'Apakah kamu yakin ingin menghapus user?');
+        return view('manage.users', compact([
+            'user',
+            'kelas'
+        ]), ['menu_type' => 'manage-user']);
+    }
+
+    public function addUser(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required',
+            'username' => 'required|min:3',
+            'password' => 'required|min:4',
+            'role' => 'required',
+            'kelas_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput($request->all());
+        }
+
+        $user = new User();
+        $user->fullname = $request->fullname;
+        $user->username = $request->username;
+        $user->password =  bcrypt($request->password);
+        $user->unencrypted_password = $request->password;
+        $user->role = $request->role;
+        $user->kelas_id = $request->kelas_id;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User berhasil ditambahkan');
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User yang ingin diubah tidak ditemukan');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required',
+            'username' => 'required|min:3',
+            'password' => 'required|min:4',
+            'role' => 'required',
+            'kelas_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput($request->all());
+        }
+
+        $user->fullname = $request->fullname;
+        $user->username = $request->username;
+        $user->password =  bcrypt($request->password);
+        $user->unencrypted_password = $request->password;
+        $user->role = $request->role;
+        $user->kelas_id = $request->kelas_id;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User berhasil diubah');
+    }
+
+    public function importUser(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:csv,xlsx,xls',
+            'kelas_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        }
+
+        Excel::import(new UserImport($request->kelas_id), $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data kelas berhasil diimport');
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User yang ingin dihapus tidak ditemukan');
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User berhasil dihapus');
+    }
+}

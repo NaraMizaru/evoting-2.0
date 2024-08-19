@@ -20,7 +20,7 @@
     <div id="content-wrapper" class="d-flex flex-column">
       <div id="content">
         @include('template.navbar')
-        <div class="container" style="min-height: 100vh">
+        <div class="container-fluid" style="min-height: 100vh">
           @yield('content')
         </div>
       </div>

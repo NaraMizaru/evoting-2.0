@@ -9,31 +9,37 @@
   <hr class="sidebar-divider my-0">
 
   <li class="nav-item {{ $menu_type == 'dashboard' ? 'active' : '' }}">
-    <a href="" class="nav-link">
+    <a href="{{ route('admin.dashboard') }}" class="nav-link">
       <i class="fa-regular fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span>
     </a>
   </li>
 
   <hr class="sidebar-divider">
-  <div class="sidebar-heading">Manage</div>
+  <div class="sidebar-heading">Kelola</div>
 
+  <li class="nav-item {{ $menu_type == 'manage-class' ? 'active' : '' }}">
+    <a href="{{ route('admin.manage.class') }}" class="nav-link">
+      <i class="fa-regular fa-fw fa-school"></i>
+      <span>Kelola Kelas</span>
+    </a>
+  </li>
   <li class="nav-item {{ $menu_type == 'manage-user' ? 'active' : '' }}">
-    <a href="" class="nav-link">
+    <a href="{{ route('admin.manage.users') }}" class="nav-link">
       <i class="fa-regular fa-fw fa-users"></i>
-      <span>Manage User</span>
+      <span>Kelola User</span>
     </a>
   </li>
   <li class="nav-item {{ $menu_type == 'manage-pemilu' ? 'active' : '' }}">
     <a href="" class="nav-link">
       <i class="fa-regular fa-fw fa-check-to-slot"></i>
-      <span>Manage Pemilu</span>
+      <span>Kelola Pemilu</span>
     </a>
   </li>
   <li class="nav-item {{ $menu_type == 'vote-logs' ? 'active' : '' }}">
     <a href="" class="nav-link">
       <i class="fa-regular fa-fw fa-clock-rotate-left"></i>
-      <span>Vote Logs</span>
+      <span>Log Voting</span>
     </a>
   </li>
 

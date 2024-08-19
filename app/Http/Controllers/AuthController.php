@@ -60,6 +60,7 @@ class AuthController extends Controller
         }
 
         Auth::logout();
-
+        Alert::success('Logout successful', "Thank's You For Voting")->persistent(true);
+        return redirect()->route('view.login');
     }
 }

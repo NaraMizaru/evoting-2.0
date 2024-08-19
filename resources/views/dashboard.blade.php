@@ -18,8 +18,8 @@
       <div class="card">
         <div class="card-body">
           <div class="p-5">
-            <h4 class="text-primary text-center">No Elections Are Currently Active</h4>
-            <p class="text-center">make an election <a href="">here</a></p>
+            <h4 class="text-primary text-center">Tidak Ada Pemilu Yang Sedang Aktif</h4>
+            <p class="text-center">Buat Pemilu <a href="">Disini</a></p>
           </div>
         </div>
       </div>

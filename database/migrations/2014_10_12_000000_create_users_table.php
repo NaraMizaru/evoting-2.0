@@ -15,13 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('fullname');
             $table->string('username')->unique();
-            $table->string('email')->nullable()->unique();
             $table->string('password');
             $table->string('unencrypted_password');
             $table->enum('role', ['admin', 'siswa', 'guru', 'caraka'])->default('siswa');
             $table->foreignId('kelas_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('profile_picture')->nullable();
-            $table->tinyInteger('is_voted')->default(0);
             $table->timestamps();
         });
     }

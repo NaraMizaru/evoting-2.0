@@ -9,5 +9,15 @@ class Kelas extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'slug'
+    ];
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public $timestamps = false;
 }
