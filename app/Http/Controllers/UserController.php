@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\UserImport;
 use App\Models\Kelas;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -84,21 +85,53 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:csv,xlsx,xls',
-            'kelas_id' => 'required'
+            'role' => 'required',
+            'kelas_id' => 'required_if:role,siswa',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-        Excel::import(new UserImport($request->kelas_id), $request->file('file'));
+        Excel::import(new UserImport($request->kelas_id ?? NULL, $request->role), $request->file('file'));
 
-        return redirect()->back()->with('success', 'Data kelas berhasil diimport');
+        return redirect()->back()->with('success', 'Data user berhasil diimport');
     }
 
-    public function deleteUser($id)
+    public function exportUser(Request $request)
     {
-        $user = User::where('id', $id)->first();
+        $validator = Validator::make($request->all(), [
+            'role' => 'required',
+            'kelas_id' => 'required_if:role,siswa'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        }
+
+        $kelas = Kelas::where('id', $request->kelas_id)->first();
+
+        if ($request->role == 'siswa') {
+            $users = User::where('kelas_id', $request->kelas_id)->get();
+        } else if ($request->role == 'guru') {
+            $users = User::where('role', 'guru')->get();
+        } else if ($request->role == 'caraka') {
+            $users = User::where('role', 'caraka')->get();
+        }
+
+        $pdf = Pdf::loadView('export.export-users', compact('users'));
+        if ($request->role == 'siswa') {
+            return $pdf->download('Data User Evoting ' . $kelas->name . '.pdf');
+        } else if ($request->role == 'guru') {
+            return $pdf->download('Data User Evoting Guru' . '.pdf');
+        } else if ($request->role == 'caraka') {
+            return $pdf->download('Data User Evoting Caraka' . '.pdf');
+        }
+    }
+
+    public function deleteUser($username)
+    {
+        $user = User::where('username', $username)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'User yang ingin dihapus tidak ditemukan');

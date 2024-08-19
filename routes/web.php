@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\DashboarController;
+use App\Http\Controllers\PemiluController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,13 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
     Route::get('/manage/users', [UserController::class, 'manageUser'])->name('admin.manage.users');
     Route::post('/manage/user/add', [UserController::class, 'addUser'])->name('admin.manage.user.add');
     Route::post('/manage/user/import', [UserController::class, 'importUser'])->name('admin.manage.user.import');
+    Route::get('/manage/user/export', [UserController::class, 'exportUser'])->name('admin.manage.user.export');
     Route::post('/manage/user/{id}/update', [UserController::class, 'updateUser'])->name('admin.manage.user.update');
-    Route::delete('/manage/user/{id}/delete', [UserController::class, 'deleteUser'])->name('admin.manage.user.delete');
+    Route::delete('/manage/user/{username}/delete', [UserController::class, 'deleteUser'])->name('admin.manage.user.delete');
+
+    Route::get('/manage/pemilu', [PemiluController::class, 'managePemilu'])->name('admin.manage.pemilu');
+    Route::post('/manage/pemilu/add', [PemiluController::class, 'addPemilu'])->name('admin.manage.pemilu.add');
+
+    Route::get('/manage/pemilu/{slug}/kandidat', [PemiluController::class, 'kandidatPemilu'])->name('admin.manage.pemilu.kandidat');
+    Route::post('/manage/pemilu/{slug}/kandidat/add', [PemiluController::class, 'addKandidatPemilu'])->name('admin.manage.pemilu.kandidat.add');
 });

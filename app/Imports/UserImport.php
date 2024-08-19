@@ -15,21 +15,25 @@ class UserImport implements ToModel
     */
 
     protected $kelas_id;
+    protected $role;
 
-    public function __construct($kelas_id)
+    public function __construct($kelas_id, $role)
     {
         $this->kelas_id = $kelas_id;
+        $this->role = $role;
     }
 
     public function model(array $row)
     {
+        $unencryptedPassword = $row[3] ?? Str::random(8);
+        $password = bcrypt($unencryptedPassword);
+
         return new User([
             'fullname' => $row[1],
             'username' => $row[2] ?? Str::random(8),
-            'email' => $row[3],
-            'password' => bcrypt($row[4]) ?? Str::random(8),
-            'unencrypted_password' => $row[4] ?? Str::random(8),
-            'role' => $row[5],
+            'password' => $password,
+            'unencrypted_password' => $unencryptedPassword,
+            'role' => $this->role,
             'kelas_id' => $this->kelas_id,
         ]);
     }

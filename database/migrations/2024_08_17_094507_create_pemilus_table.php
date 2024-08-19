@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->text('description');
             $table->tinyInteger('is_private')->default(0);
-            $table->enum('status', ['active', 'nonactive'])->default('nonactive');
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

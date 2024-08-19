@@ -149,8 +149,9 @@
                                 accept=".csv, .xlsx, .xls">
                         </div>
                         <div class="form-group">
-                            <label for="name">Contoh Table</label>
+                            <label for="table">Contoh Table</label>
                             <span class="text-danger">*Tidak di beri header</span>
+                            <a href="{{ asset('assets/example-import/Data Kelas (Contoh).xlsx') }}" class="btn btn-danger float-right mb-2"><i class="fa-regular fa-download"></i></a>
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>

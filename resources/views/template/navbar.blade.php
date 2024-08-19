@@ -34,9 +34,14 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">NaraMizaru</span>
-                <img src="{{ asset('assets/img/avatar-1.png') }}"
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ auth()->user()->fullname }}</span>
+                @if (auth()->user()->profile_picture == NULL)
+                    <img src="{{ asset('assets/img/avatar-1.png') }}"
                     class="img-profile rounded-circle font-weight-bold"></img>
+                @else
+                    <img src="{{ asset(auth()->user()->profile_picture) }}"
+                    class="img-profile rounded-circle font-weight-bold"></img>
+                @endif
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="">

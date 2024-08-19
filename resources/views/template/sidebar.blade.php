@@ -31,7 +31,7 @@
     </a>
   </li>
   <li class="nav-item {{ $menu_type == 'manage-pemilu' ? 'active' : '' }}">
-    <a href="" class="nav-link">
+    <a href="{{ route('admin.manage.pemilu') }}" class="nav-link">
       <i class="fa-regular fa-fw fa-check-to-slot"></i>
       <span>Kelola Pemilu</span>
     </a>
