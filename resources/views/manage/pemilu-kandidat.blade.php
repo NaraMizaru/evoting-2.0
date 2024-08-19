@@ -61,7 +61,8 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <button onclick="edit('{{ $pemilu->slug }}')" class="btn btn-primary"><i class="fa-regular fa-edit"></i></button>
+                                        <button onclick="edit('{{ $pemilu->slug }}', {{ $item->id }})" class="btn btn-primary"><i class="fa-regular fa-edit"></i></button>
+                                        <a class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -187,8 +188,8 @@
         }
     </script>
     <script>
-        const edit = (slug) => {
-            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/kandidat`, (data) => {
+        const edit = (slug, id) => {
+            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/kandidat/${id}`, (data) => {
 
                 $('#edit-name').val(data.name);
                 $('#edit-description').val(data.description);

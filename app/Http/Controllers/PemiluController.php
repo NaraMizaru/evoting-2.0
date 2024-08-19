@@ -14,6 +14,7 @@ class PemiluController extends Controller
     {
         $pemilu = Pemilu::orderBy('created_at', 'ASC')->get();
 
+        confirmDelete('Hapus Pemilu', 'Apakah kamu yakin ingin menghapus pemilu?');
         return view('manage.pemilu', compact([
             'pemilu'
         ]), ['menu_type' => 'manage-pemilu']);
@@ -58,6 +59,7 @@ class PemiluController extends Controller
 
         $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
 
+        confirmDelete('Hapus Kandidat', 'Apakah kamu yakin ingin menghapus kandidat?');
         return view('manage.pemilu-kandidat', compact([
             'pemilu',
             'kandidat'
