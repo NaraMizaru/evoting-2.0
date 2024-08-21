@@ -32,7 +32,7 @@ class AuthController extends Controller
         if ($request->has('admin')) {
             $credentials = $request->only(['username', 'password']);
             $auth = Auth::attempt($credentials);
-            
+
             if ($auth && Auth::user()->role == 'admin') {
                 $user = Auth::user();
                 Alert::success('Login successful', 'Happy Voting')->persistent(true);
@@ -40,13 +40,12 @@ class AuthController extends Controller
             } else {
                 return redirect()->back()->with('error', 'Username or password incorrect');
             }
-        } else {
-            return redirect()->back()->with('error', 'Username or password incorrect');
         }
 
         $auth = Auth::attempt($request->only(['username', 'password']));
         if ($auth) {
-            return redirect()->route('dashboard')->with('status', 'Welcome to the dashboard, ' . $user->fullname);;
+            $user = Auth::user();
+            return redirect()->route('user.dashboard')->with('status', 'Welcome to the dashboard, ' . $user->fullname);;
         } else {
             return redirect()->back()->with('error', 'Username or password incorrect');
         }

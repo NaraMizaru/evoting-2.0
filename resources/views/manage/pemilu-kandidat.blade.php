@@ -62,7 +62,7 @@
                                     </td>
                                     <td>
                                         <button onclick="edit('{{ $pemilu->slug }}', {{ $item->id }})" class="btn btn-primary"><i class="fa-regular fa-edit"></i></button>
-                                        <a class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>
+                                        <a href="{{ route('admin.manage.pemilu.kandidat.delete', [$pemilu->slug, $item->id]) }}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -120,7 +120,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.manage.pemilu.kandidat.add', $pemilu->slug) }}" method="POST" enctype="multipart/form-data">
+                <form id="editKandidatForm" action="" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
@@ -190,6 +190,8 @@
     <script>
         const edit = (slug, id) => {
             $.getJSON(`${window.location.origin}/api/pemilu/${slug}/kandidat/${id}`, (data) => {
+                const updateUrl = `{{ route('admin.manage.pemilu.kandidat.update', [':slug', ':id']) }}`
+                $('#editKandidatForm').attr('action', updateUrl.replace(':slug', slug).replace(':id', id))
 
                 $('#edit-name').val(data.name);
                 $('#edit-description').val(data.description);

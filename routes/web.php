@@ -24,10 +24,9 @@ Route::get('/', function () {
 
 Route::get('/login', [AuthController::class, 'indexLogin'])->name('view.login');
 Route::post('/login', [AuthController::class, 'login'])->name('post.login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('post.logout')->middleware('auth');
 
 Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], function() {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('post.logout');
-
     Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('/manage/class', [ClassController::class, 'manageClass'])->name('admin.manage.class');
@@ -45,7 +44,18 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
 
     Route::get('/manage/pemilu', [PemiluController::class, 'managePemilu'])->name('admin.manage.pemilu');
     Route::post('/manage/pemilu/add', [PemiluController::class, 'addPemilu'])->name('admin.manage.pemilu.add');
+    Route::post('/manage/pemilu/{slug}/edit', [PemiluController::class, 'updatePemilu'])->name('admin.manage.pemilu.edit');
+    Route::delete('/manage/pemilu/{slug}/delete', [PemiluController::class, 'deletePemilu'])->name('admin.manage.pemilu.delete');
 
     Route::get('/manage/pemilu/{slug}/kandidat', [PemiluController::class, 'kandidatPemilu'])->name('admin.manage.pemilu.kandidat');
     Route::post('/manage/pemilu/{slug}/kandidat/add', [PemiluController::class, 'addKandidatPemilu'])->name('admin.manage.pemilu.kandidat.add');
+    Route::post('/manage/pemilu/{slug}/kandidat/{id}/update', [PemiluController::class, 'updateKandidatPemilu'])->name('admin.manage.pemilu.kandidat.update');
+    Route::delete('/manage/pemilu/{slug}/kandidat/{id}/delete', [PemiluController::class, 'deleteKandidatPemilu'])->name('admin.manage.pemilu.kandidat.delete');
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'user'], function() {
+    Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('user.dashboard');
+
+    Route::get('/event/pemilu/{slug}/join', [DashboarController::class, 'joinPemilu'])->name('user.pemilu.join')->middleware('verify.pemilu.password');
+    Route::post('/pemilu/{slug}/verify-password', [DashboarController::class, 'verifyPassword'])->name('user.pemilu.verify-password');
 });

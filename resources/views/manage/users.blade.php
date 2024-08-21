@@ -26,7 +26,7 @@
             @endif
 
             @if (Session::has('error'))
-                <div class="alert alert-success border-left-success" role="alert">
+                <div class="alert alert-danger border-left-danger" role="alert">
                     {{ Session::get('error') }}
                 </div>
             @endif
@@ -71,8 +71,9 @@
                                     <td>
                                         <button onclick="edit({{ $item->id }})" class="btn btn-primary"><i
                                                 class="fa-regular fa-edit"></i></button>
-                                        <a href="{{ route('admin.manage.user.delete', $item->username) }}" class="btn btn-danger"
-                                            data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>
+                                        <a href="{{ route('admin.manage.user.delete', $item->username) }}"
+                                            class="btn btn-danger" data-confirm-delete="true"><i
+                                                class="fa-regular fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -129,16 +130,16 @@
                         </div>
                         <div class="form-group">
                             <label for="role">Role</label>
-                            <select name="role" id="role-select" class="form-control">
+                            <select name="role" id="add-role-select" class="form-control">
                                 <option value="">Pilih Role</option>
                                 <option value="siswa">Siswa</option>
                                 <option value="guru">Guru</option>
                                 <option value="caraka">Caraka</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group d-none" id="add-user-group">
                             <label for="kelas">Kelas</label>
-                            <select name="kelas_id" id="kelas-select" class="form-control">
+                            <select name="kelas_id" id="add-kelas-select" class="form-control">
                                 <option value="">Pilih Kelas</option>
                                 @foreach ($kelas as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -208,7 +209,7 @@
                                 <option value="caraka">Caraka</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group d-none" id="edit-user-group">
                             <label for="kelas">Kelas</label>
                             <select name="kelas_id" id="edit-kelas-select" class="form-control">
                                 <option value="">Pilih Kelas</option>
@@ -380,6 +381,22 @@
                 tags: true
             });
 
+            $('#add-role-select').on('change', function() {
+                if ($(this).val() === 'siswa') {
+                    $('#add-user-group').removeClass('d-none');
+                } else {
+                    $('#add-user-group').addClass('d-none');
+                }
+            });
+
+            $('#edit-role-select').on('change', function() {
+                if ($(this).val() === 'siswa') {
+                    $('#edit-user-group').removeClass('d-none');
+                } else {
+                    $('#edit-user-group').addClass('d-none');
+                }
+            });
+
             $('#import-role-select').on('change', function() {
                 if ($(this).val() === 'siswa') {
                     $('#import-user-group').removeClass('d-none');
@@ -407,12 +424,13 @@
                 $('#edit-fullname').val(data.fullname);
                 $('#edit-username').val(data.username);
                 $('#edit-password').val(data.unencrypted_password);
-                $('#edit-role-select').select2({
-                    theme: 'bootstrap-5',
-                }).val(data.role).trigger('change');
                 $('#edit-kelas-select').select2({
                     theme: 'bootstrap-5',
                 }).val(data.kelas_id).trigger('change');
+
+                $('#edit-role-select').select2({
+                    theme: 'bootstrap-5',
+                }).val(data.role).trigger('change');
 
                 const myModal = new bootstrap.Modal(document.getElementById('editUserModal'));
                 myModal.show();

@@ -31,7 +31,7 @@ class UserController extends Controller
             'username' => 'required|min:3',
             'password' => 'required|min:4',
             'role' => 'required',
-            'kelas_id' => 'required'
+            'kelas_id' => 'required_if:role,siswa'
         ]);
 
         if ($validator->fails()) {
@@ -63,11 +63,15 @@ class UserController extends Controller
             'username' => 'required|min:3',
             'password' => 'required|min:4',
             'role' => 'required',
-            'kelas_id' => 'required'
+            'kelas_id' => 'required_if:role,siswa'
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput($request->all());
+        }
+
+        if ($request->role != 'siswa') {
+            $request->merge(['kelas_id' => null]);
         }
 
         $user->fullname = $request->fullname;

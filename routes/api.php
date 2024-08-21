@@ -23,4 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/class/{id}', [ClassController::class, 'getClass']);
 Route::get('/user/{id}', [UserController::class, 'getUser']);
+Route::get('/pemilu/{slug}/', [PemiluController::class, 'getPemilu']);
 Route::get('/pemilu/{slug}/kandidat/{id}', [PemiluController::class, 'getKandidat']);

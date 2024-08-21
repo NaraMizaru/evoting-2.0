@@ -9,6 +9,17 @@ use Illuminate\Http\Request;
 
 class PemiluController extends Controller
 {
+    public function getPemilu($slug) 
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return response()->json(['message' => 'Pemilu not found'], 404);
+        }
+
+        return response()->json($pemilu);
+    }
+
     public function getKandidat($slug, $id)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
@@ -17,11 +28,16 @@ class PemiluController extends Controller
             return response()->json(['message' => 'Pemilu not found'], 404);
         }
 
-        $kandidat = Kandidat::where('id', $id)->first();
+        $kandidat = Kandidat::where('id', $id)->where('pemilu_id', $pemilu->id)->first();
         if (!$kandidat) {
             return response()->json(['message' => 'Kandidat not found'], 404);
         }
 
         return response()->json($kandidat);
+    }
+
+    public function getResultVoting()
+    {
+        
     }
 }

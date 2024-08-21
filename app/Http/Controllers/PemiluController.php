@@ -12,7 +12,7 @@ class PemiluController extends Controller
 {
     public function managePemilu()
     {
-        $pemilu = Pemilu::orderBy('created_at', 'ASC')->get();
+        $pemilu = Pemilu::orderBy('created_at', 'DESC')->get();
 
         confirmDelete('Hapus Pemilu', 'Apakah kamu yakin ingin menghapus pemilu?');
         return view('manage.pemilu', compact([
@@ -37,6 +37,10 @@ class PemiluController extends Controller
         $toLower = strtolower($request->name);
         $slug = str_replace([' ', '/'], '-', $toLower);
 
+        if ($request->is_private == 0) {
+            $request->merge(['password' => null]);
+        }
+
         $pemilu = new Pemilu();
         $pemilu->name = $request->name;
         $pemilu->slug = $slug;
@@ -47,6 +51,56 @@ class PemiluController extends Controller
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Pemilu berhasil ditambahkan');
+    }
+
+    public function updatePemilu(Request $request, $slug)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'is_private' => 'required',
+            'password' => 'required_if:is_private,1',
+            'status' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        }
+
+        $toLower = strtolower($request->name);
+        $slug = str_replace([' ', '/'], '-', $toLower);
+
+        if ($request->is_private == 0) {
+            $request->merge(['password' => null]);
+        }
+
+        $pemilu->name = $request->name;
+        $pemilu->slug = $slug;
+        $pemilu->description = $request->description;
+        $pemilu->is_private = (int)$request->is_private;
+        $pemilu->password = $request->password;
+        $pemilu->status = (int)$request->status;
+        $pemilu->save();
+
+        return redirect()->back()->with('success', 'Pemilu berhasil diubah');
+    }
+
+    public function deletePemilu($slug)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu yang ingin dihapus tidak ditemukan');
+        }
+
+        $pemilu->delete();
+        return redirect()->back()->with('success', 'Pemilu berhasil dihapus');
     }
 
     public function kandidatPemilu($slug)
@@ -96,5 +150,62 @@ class PemiluController extends Controller
         $kandidat->save();
 
         return redirect()->back()->with('success', 'Kandidat berhasil ditambahkan');
+    }
+
+    public function updateKandidatPemilu(Request $request,  $slug, $id)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $kandidat = Kandidat::where('id', $id)->where('pemilu_id', $pemilu->id)->first();
+
+        if (!$kandidat) {
+            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'vision_mission' => 'required',
+            'image' => 'nullable|file|image|mimes:png,jpg,jpeg'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        }
+
+        $kandidat->name = $request->name;
+        $kandidat->description = $request->description;
+        $kandidat->vision_mission = $request->vision_mission;
+
+        if ($request->hasFile('image')) {
+            $fileName = Str::random(8) . '.' . $request->file('image')->getClientOriginalExtension();
+            $kandidat->image = $request->file('image')->storeAs('pemilu/' . $pemilu->slug, $fileName);
+        }
+
+        $kandidat->save();
+
+        return redirect()->back()->with('success', 'Kandidat berhasil diubah');
+    }
+
+    public function deleteKandidatPemilu($slug, $id)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $kandidat = Kandidat::where('id', $id)->where('pemilu_id', $pemilu->id)->first();
+
+        if (!$kandidat) {
+            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
+        }
+
+        $kandidat->delete();
+        return redirect()->back()->with('success', 'Kandidat berhasil dihapus');
     }
 }

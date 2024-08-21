@@ -24,7 +24,7 @@
             @endif
 
             @if (Session::has('error'))
-                <div class="alert alert-success border-left-success" role="alert">
+                <div class="alert alert-danger border-left-danger" role="alert">
                     {{ Session::get('error') }}
                 </div>
             @endif

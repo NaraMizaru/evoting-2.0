@@ -6,41 +6,43 @@
     <h5 class="text-primary d-none d-md-block">E-Voting | SMK Negeri 2 Sukabumi</h5>
 
     <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <span class="badge badge-danger badge-counter">10+</span>
-            </a>
-            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                    Pusat Pemberitahuan
-                </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-primary">
-                            <i class="fas fa-file-alt text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 12, 2019</div>
-                        <span class="font-weight-bold">M1zaru telah voting</span>
-                    </div>
+        @if (auth()->user()->role == 'admin')
+            <li class="nav-item dropdown no-arrow mx-1">
+                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-bell fa-fw"></i>
+                    <span class="badge badge-danger badge-counter">10+</span>
                 </a>
-            </div>
-        </li>
-        <div class="topbar-divider d-none d-sm-block"></div>
+                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                    aria-labelledby="alertsDropdown">
+                    <h6 class="dropdown-header">
+                        Pusat Pemberitahuan
+                    </h6>
+                    <a class="dropdown-item d-flex align-items-center" href="#">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-primary">
+                                <i class="fas fa-file-alt text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">December 12, 2019</div>
+                            <span class="font-weight-bold">M1zaru telah voting</span>
+                        </div>
+                    </a>
+                </div>
+            </li>
+            <div class="topbar-divider d-none d-sm-block"></div>
+        @endif
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ auth()->user()->fullname }}</span>
-                @if (auth()->user()->profile_picture == NULL)
+                @if (auth()->user()->profile_picture == null)
                     <img src="{{ asset('assets/img/avatar-1.png') }}"
-                    class="img-profile rounded-circle font-weight-bold"></img>
+                        class="img-profile rounded-circle font-weight-bold"></img>
                 @else
                     <img src="{{ asset(auth()->user()->profile_picture) }}"
-                    class="img-profile rounded-circle font-weight-bold"></img>
+                        class="img-profile rounded-circle font-weight-bold"></img>
                 @endif
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
