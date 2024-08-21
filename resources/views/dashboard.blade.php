@@ -39,22 +39,26 @@
                     </div>
                 </div>
             @endif
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="p-5">
-                            <h4 class="text-primary text-center">Tidak Ada Pemilu Yang Sedang Aktif</h4>
-                            <p class="text-center">Buat Pemilu <a href="">Disini</a></p>
+            @if ($pemilu->isEmpty())
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="p-5">
+                                <h4 class="text-primary text-center">Tidak Ada Pemilu Yang Sedang Aktif</h4>
+                                <p class="text-center">Buat Pemilu <a href="">Disini</a></p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @else
+
+            @endif
         </div>
     @else
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header" id="collapseDetailVoting">
+                    <div class="card-header" id="collapseVotingAktif">
                         <div class="row">
                             <div class="col">
                                 <h4 class="text-primary card-title">Daftar Pemilu Yang Sedang Aktif</h4>
@@ -65,12 +69,12 @@
                             </button>
                         </div>
                     </div>
-                    <div id="collapseBody" class="collapse" aria-labelledby="collapseDetailVoting"
-                        data-parent="#collapseDetailVoting">
+                    <div id="collapseBody" class="collapse" aria-labelledby="collapseVotingAktif"
+                        data-parent="#collapseVotingAktif">
                         <div class="card-body">
                             <div class="row">
                                 @foreach ($pemilu as $item)
-                                    <div class="col-12 col-md-6 col-lg-3 mt-3">
+                                    <div class="col-12 col-md-6 col-lg-4 mt-3">
                                         <div class="card h-100">
                                             <div class="card-header bg-primary">
                                                 <h5 class="card-title text-white">{{ $item->name }}</h5>

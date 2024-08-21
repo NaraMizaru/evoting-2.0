@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="{{ asset('css/sb-admin.min.css') }}">
   <link rel="stylesheet" href="https://naramizaru.github.io/awesome/css/all.min.css">
   @stack('css')
-  <title>@yield('title') | {{ config('app.name') }}</title>
+  <title>{{ config('app.name') }} | @yield('title')</title>
 </head>
 <body id="page-top">
   <div id="wrapper">

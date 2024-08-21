@@ -11,24 +11,30 @@
                 <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-bell fa-fw"></i>
-                    <span class="badge badge-danger badge-counter">10+</span>
+                    @if ($notificationCount > 10)
+                        <span class="badge badge-danger badge-counter">10+</span>
+                    @else
+                        <span class="badge badge-danger badge-counter">{{ $notificationCount }}</span>
+                    @endif
                 </a>
                 <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                     aria-labelledby="alertsDropdown">
                     <h6 class="dropdown-header">
                         Pusat Pemberitahuan
                     </h6>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                        <div class="mr-3">
-                            <div class="icon-circle bg-primary">
-                                <i class="fas fa-file-alt text-white"></i>
+                    @foreach ($notification as $item)
+                        <button class="dropdown-item d-flex align-items-center" href="#">
+                            <div class="mr-3">
+                                <div class="icon-circle bg-primary">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <div class="small text-gray-500">December 12, 2019</div>
-                            <span class="font-weight-bold">M1zaru telah voting</span>
-                        </div>
-                    </a>
+                            <div>
+                                <div class="small text-gray-500">{{ $item->created_at->format('d F Y | H:i') }}</div>
+                                <span class="font-weight-bold">{{ $item->user->fullname }} telah voting di {{ $item->pemilu->name }}</span>
+                            </div>
+                        </button>
+                    @endforeach
                 </div>
             </li>
             <div class="topbar-divider d-none d-sm-block"></div>

@@ -57,5 +57,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user'], function() {
     Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('user.dashboard');
 
     Route::get('/event/pemilu/{slug}/join', [DashboarController::class, 'joinPemilu'])->name('user.pemilu.join')->middleware('verify.pemilu.password');
+    Route::post('/event/pemilu/{slug}/kandidat/{id}/vote', [DashboarController::class, 'votePemilu'])->name('user.pemilu.vote');
     Route::post('/pemilu/{slug}/verify-password', [DashboarController::class, 'verifyPassword'])->name('user.pemilu.verify-password');
 });

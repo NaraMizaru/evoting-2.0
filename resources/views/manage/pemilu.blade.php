@@ -62,8 +62,11 @@
                                         <button onclick="edit('{{ $item->slug }}')" class="btn btn-primary"><i
                                                 class="fa-regular fa-edit"></i></button>
                                         <button data-target="#resultPemiluModal" data-toggle="modal"
-                                            class="btn btn-secondary"><i
+                                            class="btn btn-warning"><i
                                                 class="fa-regular fa-square-poll-vertical"></i></button>
+                                        <button data-target="#resultPemiluModal" data-toggle="modal"
+                                            class="btn btn-secondary"><i
+                                                class="fa-regular fa-clock-rotate-left"></i></button>
                                         <a href="{{ route('admin.manage.pemilu.delete', $item->slug) }}" data-confirm-delete="true" class="btn btn-danger"><i class="fa-regular fa-trash"></i></a>
                                     </td>
                                 </tr>

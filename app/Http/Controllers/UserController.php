@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\UserImport;
 use App\Models\Kelas;
+use App\Models\Notification;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -16,11 +17,15 @@ class UserController extends Controller
     {
         $user = User::where('role', '!=', 'admin')->orderBy('kelas_id', 'asc')->get();
         $kelas = Kelas::orderBy('name', 'asc')->get();
+        $notification = Notification::latest()->limit(5)->get();
+        $notificationCount = Notification::count();
 
         confirmDelete('Hapus User', 'Apakah kamu yakin ingin menghapus user?');
         return view('manage.users', compact([
             'user',
-            'kelas'
+            'kelas',
+            'notification',
+            'notificationCount'
         ]), ['menu_type' => 'manage-user']);
     }
 

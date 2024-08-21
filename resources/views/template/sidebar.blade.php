@@ -44,12 +44,6 @@
                 <span>Kelola Pemilu</span>
             </a>
         </li>
-        <li class="nav-item {{ $menu_type == 'vote-logs' ? 'active' : '' }}">
-            <a href="" class="nav-link">
-                <i class="fa-regular fa-fw fa-clock-rotate-left"></i>
-                <span>Log Voting</span>
-            </a>
-        </li>
     @endif
 
     <hr class="sidebar-divider d-none d-md-block">

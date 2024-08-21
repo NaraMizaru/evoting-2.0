@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\ClassImport;
 use App\Models\Kelas;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,9 +14,15 @@ class ClassController extends Controller
     public function manageClass()
     {
         $kelas = Kelas::orderBy('name', 'asc')->get();
+        $notification = Notification::latest()->limit(5)->get();
+        $notificationCount = Notification::count();
 
         confirmDelete('Hapus Kelas', 'Apakah kamu yakin ingin menghapus kelas?');
-        return view('manage.class', compact(['kelas']), ['menu_type' => 'manage-class']);
+        return view('manage.class', compact([
+            'kelas',
+            'notification',
+            'notificationCount'
+        ]), ['menu_type' => 'manage-class']);
     }
 
     public function addClass(Request $request)

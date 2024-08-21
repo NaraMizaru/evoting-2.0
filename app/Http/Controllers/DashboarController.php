@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kandidat;
+use App\Models\Notification;
 use App\Models\Pemilu;
+use App\Models\Voting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -15,10 +18,13 @@ class DashboarController extends Controller
     public function dashboard()
     {
         $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('status', 1)->get();
-
+        $notificationCount = Notification::count();
+        $notification = Notification::latest()->limit(5)->get();
 
         return view('dashboard', compact([
-            'pemilu'
+            'pemilu',
+            'notification',
+            'notificationCount',
         ]), ['menu_type' => 'dashboard']);
     }
 
@@ -28,6 +34,13 @@ class DashboarController extends Controller
 
         if (!$pemilu) {
             return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $user = Auth::user();
+        $userVoted = Voting::where('pemilu_id', $pemilu->id)->where('user_id', $user->id)->first();
+        if ($userVoted) {
+            Alert::warning('Peringatan', 'Anda Sudah Melakukan Voting');
+            return redirect()->back();
         }
 
         $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
@@ -63,5 +76,34 @@ class DashboarController extends Controller
 
         // dd(Session::get('pemilu_' . $pemilu->slug . '_verified'));
         return redirect()->route('user.pemilu.join', $slug);
+    }
+
+    public function votePemilu($slug, $id)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $kandidat = Kandidat::where('id', $id)->where('pemilu_id', $pemilu->id)->first();
+        if (!$kandidat) {
+            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
+        }
+
+        $voting = new Voting();
+        $voting->pemilu_id = $pemilu->id;
+        $voting->kandidat_id = $kandidat->id;
+        $voting->user_id = Auth::id();
+        $voting->save();
+
+        if ($voting->save()) {
+            $notification = new Notification();
+            $notification->user_id = Auth::id();
+            $notification->pemilu_id = $pemilu->id;
+            $notification->save();
+
+            Alert::success('Success', 'Anda telah melakukan voting kepada ' . $kandidat->nama);
+            return redirect()->route('user.dashboard');
+        }
     }
 }

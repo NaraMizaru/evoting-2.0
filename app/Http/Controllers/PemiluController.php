@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kandidat;
+use App\Models\Notification;
 use App\Models\Pemilu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,10 +14,14 @@ class PemiluController extends Controller
     public function managePemilu()
     {
         $pemilu = Pemilu::orderBy('created_at', 'DESC')->get();
+        $notificationCount = Notification::count();
+        $notification = Notification::latest()->limit(5)->get();
 
         confirmDelete('Hapus Pemilu', 'Apakah kamu yakin ingin menghapus pemilu?');
         return view('manage.pemilu', compact([
-            'pemilu'
+            'pemilu',
+            'notification',
+            'notificationCount'
         ]), ['menu_type' => 'manage-pemilu']);
     }
 

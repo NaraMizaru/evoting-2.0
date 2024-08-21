@@ -351,12 +351,12 @@
                 responsive: true,
             })
 
-            $("#role-select").select2({
+            $("#add-role-select").select2({
                 theme: 'bootstrap-5',
                 tags: true
             });
 
-            $("#kelas-select").select2({
+            $("#add-kelas-select").select2({
                 theme: 'bootstrap-5',
                 tags: true
             });
