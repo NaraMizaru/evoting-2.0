@@ -1,0 +1,33 @@
+/* .wrapper{
+    width: 40px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    left: 50%;
+    top: 50%;
+}
+.wrapper::after,
+.wrapper::before,
+.wrapper .wp-in{
+background-color: #fff;
+border-radius: 3px;
+content: '';
+display: block;
+height: 3px;
+margin: 5px 0;
+transition: .2s;
+}
+.wrapper:active .wp-in{
+    transform: scale(0);
+}
+.wrapper:active::before{
+    transform: translateY(12px) rotate(135deg);
+}
+.wrapper:active::after{
+    transform: translateY(-12px) rotate(-135deg);
+}
+.btn-wrapper{
+    width: 40px;
+    z-index: 1;
+    position: relative;
+} */

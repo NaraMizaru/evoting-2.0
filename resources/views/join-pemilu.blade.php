@@ -3,6 +3,7 @@
 
 @push('css')
     {{-- Custom CSS for This Page --}}
+    <link rel="stylesheet" href="{{asset('css/users/JoinPemilu.css')}}">
 @endpush
 
 @section('content')
@@ -12,7 +13,7 @@
                 <div class="card-header">
                     <h4 class="card-title text-primary">Daftar Kandidat | {{ $pemilu->name }}</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body cd-body-color">
                     <div class="row">
                         @foreach ($kandidat as $item)
                             <div class="col-12 col-md-4 col-lg-4 mt-3">
@@ -20,9 +21,9 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col">
-                                                <h6 class="card-title text-primary">{{ $item->description }}</h6>
+                                                <h6 class="card-title text-primary deskripsi">{{ $item->description }}</h6>
                                             </div>
-                                            <div class="ml-auto">
+                                            <div class="ml-auto m">
                                                 <button onclick="visiMisi('{{ $pemilu->slug }}', '{{ $item->id }}')"
                                                     class="btn btn-warning btn-sm">Visi & Misi</button>
                                                 <button onclick="voting('{{ $pemilu->slug }}', '{{ $item->id }}')"
@@ -51,14 +52,14 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="visionMissionModalLabel"></h5>
+                    <h5 class="modal-title home-title-vote" id="visionMissionModalLabel"></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <textarea class="form-control" cols="30" rows="20" id="visionMissionParagraph" readonly></textarea>
+                        <textarea class="form-control form-control-vote" cols="30" rows="20" id="visionMissionParagraph" readonly></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
