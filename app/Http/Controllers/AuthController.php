@@ -36,20 +36,29 @@ class AuthController extends Controller
             if ($auth && Auth::user()->role == 'admin') {
                 $user = Auth::user();
                 Alert::success('Login successful', 'Happy Voting')->persistent(true);
-                return redirect()->route('admin.dashboard')->with('status', 'Welcome to the dashboard, ' . $user->fullname);
+                return redirect()->route('admin.dashboard')->with('success', 'Welcome to the dashboard, ' . $user->fullname);
             } else {
-                return redirect()->back()->with('error', 'Username or password incorrect');
+                $user = Auth::user();
+                return redirect()->route('user.dashboard')->with('success', 'Welcome to the dashboard, ' . $user->fullname);
             }
         }
 
         $auth = Auth::attempt($request->only(['username', 'password']));
         if ($auth) {
             $user = Auth::user();
-            return redirect()->route('user.dashboard')->with('status', 'Welcome to the dashboard, ' . $user->fullname);;
+
+            if ($user->role != 'admin') {
+                return redirect()->route('user.dashboard')->with('success', 'Welcome to the dashboard, ' . $user->fullname);
+            } else {
+                Auth::logout();
+                return redirect()->back()->with('error', 'Username atau password salah');
+            }
         } else {
-            return redirect()->back()->with('error', 'Username or password incorrect');
+            return redirect()->back()->with('error', 'Username atau password salah');
         }
     }
+
+
 
     public function logout()
     {
