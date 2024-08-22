@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Administrator;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -26,6 +27,14 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'password' => bcrypt('admin'),
             'unencrypted_password' => 'admin',
+            'role' => 'admin',
+        ]);
+
+        User::create([
+            'fullname' => 'Administrator-2',
+            'username' => 'admin2',
+            'password' => bcrypt('admin2'),
+            'unencrypted_password' => 'admin2',
             'role' => 'admin',
         ]);
     }

@@ -6,14 +6,17 @@ use App\Models\Kandidat;
 use App\Models\Notification;
 use App\Models\Pemilu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class PemiluController extends Controller
 {
     public function managePemilu()
     {
-        $pemilu = Pemilu::orderBy('created_at', 'DESC')->get();
+        $user = Auth::user();
+        $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('user_id', $user->id)->get();
         $notificationCount = Notification::count();
         $notification = Notification::latest()->limit(5)->get();
 
@@ -53,6 +56,7 @@ class PemiluController extends Controller
         $pemilu->is_private = (int)$request->is_private;
         $pemilu->password = $request->password;
         $pemilu->status = (int)$request->status;
+        $pemilu->user_id = Auth::user()->id;
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Pemilu berhasil ditambahkan');
@@ -91,6 +95,7 @@ class PemiluController extends Controller
         $pemilu->is_private = (int)$request->is_private;
         $pemilu->password = $request->password;
         $pemilu->status = (int)$request->status;
+        $pemilu->user_id = Auth::user()->id;
         $pemilu->save();
 
         return redirect()->back()->with('success', 'Pemilu berhasil diubah');
@@ -104,6 +109,12 @@ class PemiluController extends Controller
             return redirect()->back()->with('error', 'Pemilu yang ingin dihapus tidak ditemukan');
         }
 
+        $user = Auth::user();
+        if ($user->id != $pemilu->user_id) {
+            Alert::warning('Akses Terlarang', 'Anda tidak memiliki akses');
+            return redirect()->back();
+        }
+
         $pemilu->delete();
         return redirect()->back()->with('success', 'Pemilu berhasil dihapus');
     }
@@ -111,9 +122,18 @@ class PemiluController extends Controller
     public function kandidatPemilu($slug)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
+        $notificationCount = Notification::count();
+        $notification = Notification::latest()->limit(5)->get();
 
         if (!$pemilu) {
             return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $user = Auth::user();
+
+        if ($user->id != $pemilu->user_id) {
+            Alert::warning('Akses Terlarang', 'Anda tidak memiliki akses');
+            return redirect()->back();
         }
 
         $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
@@ -121,7 +141,9 @@ class PemiluController extends Controller
         confirmDelete('Hapus Kandidat', 'Apakah kamu yakin ingin menghapus kandidat?');
         return view('manage.pemilu-kandidat', compact([
             'pemilu',
-            'kandidat'
+            'kandidat',
+            'notification',
+            'notificationCount'
         ]), ['menu_type' => 'manage-pemilu']);
     }
 

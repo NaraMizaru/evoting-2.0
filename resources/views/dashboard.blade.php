@@ -154,7 +154,7 @@
     <script>
         const verify = (slug) => {
             console.log(slug)
-            const verifyUrl = `{{ route('user.pemilu.verify-password', [':slug']) }}`
+            const verifyUrl = `{{ route('user.pemilu.verify-password.join', [':slug']) }}`
 
             $('#verifyPasswordForm').attr('action', verifyUrl.replace(':slug', slug))
             const myModal = new bootstrap.Modal(document.getElementById('verifyPasswordModal'));

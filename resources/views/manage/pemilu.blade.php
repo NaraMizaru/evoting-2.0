@@ -57,17 +57,27 @@
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->status ? 'Aktif' : 'Nonaktif' }}</td>
                                     <td>
-                                        <a href="{{ route('admin.manage.pemilu.kandidat', $item->slug) }}"
-                                            class="btn btn-success"><i class="fa-regular fa-ranking-star"></i></a>
-                                        <button onclick="edit('{{ $item->slug }}')" class="btn btn-primary"><i
-                                                class="fa-regular fa-edit"></i></button>
-                                        <button data-target="#resultPemiluModal" data-toggle="modal"
-                                            class="btn btn-warning"><i
-                                                class="fa-regular fa-square-poll-vertical"></i></button>
-                                        <button data-target="#resultPemiluModal" data-toggle="modal"
-                                            class="btn btn-secondary"><i
-                                                class="fa-regular fa-clock-rotate-left"></i></button>
-                                        <a href="{{ route('admin.manage.pemilu.delete', $item->slug) }}" data-confirm-delete="true" class="btn btn-danger"><i class="fa-regular fa-trash"></i></a>
+                                        @if (auth()->user()->id != $item->user_id)
+                                            <a class="btn btn-success" onclick="showWarning('{{ $item->slug }}')"><i
+                                                    class="fa-regular fa-ranking-star"></i></a>
+                                            <button class="btn btn-primary" onclick="showWarning('{{ $item->slug }}')"><i
+                                                    class="fa-regular fa-edit"></i></button>
+                                            <a class="btn btn-warning" onclick="showWarning('{{ $item->slug }}')"><i
+                                                    class="fa-regular fa-door-open"></i></a>
+                                            <button data-target="#voteLogsModal" data-toggle="modal"
+                                                class="btn btn-secondary"><i
+                                                    class="fa-regular fa-clock-rotate-left"></i></button>
+                                            <a href="{{ route('admin.manage.pemilu.delete', $item->slug) }}"
+                                                data-confirm-delete="true" class="btn btn-danger"><i
+                                                    class="fa-regular fa-trash"></i></a>
+                                        @else
+                                            <a href="{{ route('admin.manage.pemilu.kandidat', $item->slug) }}" class="btn btn-success"><i
+                                                    class="fa-regular fa-ranking-star"></i></a>
+                                            <button onclick="edit('{{ $item->slug }}')" class="btn btn-primary"><i
+                                                    class="fa-regular fa-edit"></i></button>
+                                            <button onclick="verify('{{ $item->slug }}')" class="btn btn-warning"><i
+                                                    class="fa-regular fa-door-open"></i></button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -206,12 +216,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="resultPemiluModal" tabindex="-1" role="dialog"
-        aria-labelledby="resultPemiluModalLabel" aria-hidden="true">
+    <div class="modal fade" id="voteLogsModal" tabindex="-1" role="dialog" aria-labelledby="voteLogsModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="resultPemiluModalLabel">Hasil Pemilu</h5>
+                    <h5 class="modal-title" id="voteLogsModalLabel">Hasil Pemilu</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -251,6 +261,34 @@
                 <div class="modal-footer">
                     <button class="btn btn-link" type="button" data-dismiss="modal">Tutup</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="verifyPasswordModal" tabindex="-1" role="dialog"
+        aria-labelledby="verifyPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verifyPasswordModalLabel">Verifikasi Password Pemilu</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="" method="POST" id="verifyPasswordForm">
+                    <div class="modal-body">
+                        @csrf
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input id="password" type="text" class="form-control" name="password"
+                                placeholder="Masukkan password">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">Verifikasi</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -344,6 +382,25 @@
                 iconButton.classList.remove('fa-plus');
                 iconButton.classList.add('fa-minus');
             }
+        }
+    </script>
+    <script>
+        const verify = (slug) => {
+            console.log(slug)
+            const verifyUrl = `{{ route('user.pemilu.verify-password.result', [':slug']) }}`
+
+            $('#verifyPasswordForm').attr('action', verifyUrl.replace(':slug', slug))
+            const myModal = new bootstrap.Modal(document.getElementById('verifyPasswordModal'));
+            myModal.show();
+        }
+
+        const showWarning = (slug) => {
+            Swal.fire({
+                title: 'Akses Terlarang',
+                text: 'Anda tidak memiliki hak untuk mengedit pemilu ini!',
+                icon: 'warning',
+                confirmButtonText: 'Okay'
+            })
         }
     </script>
 @endpush

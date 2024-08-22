@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->tinyInteger('is_private')->default(0);
             $table->tinyInteger('status')->default(0);
+            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

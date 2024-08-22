@@ -22,19 +22,27 @@
                     <h6 class="dropdown-header">
                         Pusat Pemberitahuan
                     </h6>
-                    @foreach ($notification as $item)
-                        <button class="dropdown-item d-flex align-items-center" href="#">
-                            <div class="mr-3">
-                                <div class="icon-circle bg-primary">
-                                    <i class="fas fa-user text-white"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="small text-gray-500">{{ $item->created_at->format('d F Y | H:i') }}</div>
-                                <span class="font-weight-bold">{{ $item->user->fullname }} telah voting di {{ $item->pemilu->name }}</span>
-                            </div>
+                    @if ($notification->isEmpty())
+                        <button class="dropdown-item">
+                            <h6 class="text-center text-primary p-2">Tidak Ada Pemberitahuan</h6>
                         </button>
-                    @endforeach
+                    @else
+                        @foreach ($notification as $item)
+                            <button class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="mr-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="small text-gray-500">{{ $item->created_at->format('d F Y | H:i') }}
+                                    </div>
+                                    <span class="font-weight-bold">{{ $item->user->fullname }} telah voting di
+                                        {{ $item->pemilu->name }}</span>
+                                </div>
+                            </button>
+                        @endforeach
+                    @endif
                 </div>
             </li>
             <div class="topbar-divider d-none d-sm-block"></div>

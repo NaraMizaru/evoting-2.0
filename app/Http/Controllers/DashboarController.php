@@ -50,7 +50,7 @@ class DashboarController extends Controller
         ]), ['menu_type' => 'dashboard']);
     }
 
-    public function verifyPassword(Request $request, $slug)
+    public function verifyPasswordJoin(Request $request, $slug)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
 
@@ -97,6 +97,8 @@ class DashboarController extends Controller
         $voting->save();
 
         if ($voting->save()) {
+            Session::remove('pemilu_' . $pemilu->slug . '_verified');
+
             $notification = new Notification();
             $notification->user_id = Auth::id();
             $notification->pemilu_id = $pemilu->id;
@@ -105,5 +107,33 @@ class DashboarController extends Controller
             Alert::success('Success', 'Anda telah melakukan voting kepada ' . $kandidat->nama);
             return redirect()->route('user.dashboard');
         }
+    }
+
+    public function verifyPasswordResult(Request $request, $slug)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        }
+
+
+        if ($request->password == $pemilu->password) {
+            Session::put('pemilu_' . $pemilu->slug . '_verified', true);
+        } else {
+            Alert::error('Error', 'Password Salah');
+            return redirect()->back();
+        }
+
+        // dd(Session::get('pemilu_' . $pemilu->slug . '_verified'));
+        return redirect()->route('user.pemilu.join', $slug);
     }
 }
