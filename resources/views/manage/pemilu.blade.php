@@ -104,7 +104,7 @@
                         <div class="form-group">
                             <label for="name">Nama Pemilu</label>
                             <input type="text" class="form-control" name="name" id="name"
-                                placeholder="Masukkan nama pemilu">
+                                placeholder="Masukkan nama pemilu" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>

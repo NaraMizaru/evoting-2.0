@@ -31,3 +31,12 @@ transition: .2s;
     z-index: 1;
     position: relative;
 } */
+.m{
+    padding-top: 10px;
+}
+.p-bd{
+    transition: all 0.3s;
+}
+.p-bd:hover{
+    scale: 0.99;
+}

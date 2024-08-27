@@ -160,7 +160,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="d-flex align-items-center justify-content-center">
-                        <img src="" alt="Image Preview" class="img-fluid rounded-lg">
+                        <img src="" alt="Image Preview" class="img-fluid rounded-lg" loading="lazy">
                     </div>
                 </div>
                 <div class="modal-footer">

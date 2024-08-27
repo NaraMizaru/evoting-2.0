@@ -2,6 +2,7 @@
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fa-regular fa-fw fa-envelope"></i>
+            {{-- <img src="{{asset('assets/img/E - VOTING (2).png')}}" height="40"> --}}
         </div>
         <div class="sidebar-brand-text mx-3">E-Voting <sup>2.0</sup></div>
     </a>

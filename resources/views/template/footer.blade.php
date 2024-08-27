@@ -3,7 +3,8 @@
     <div class="col-6">
       <div class="container my-auto">
         <div class="copyright text-left my-auto">
-            <span>Copyright &copy; <a href="https://github.com/NaraMizaru" target="_blank">M1zaru</a> {{ now()->year }}</span>
+            {{--https://github.com/NaraMizaru--}}
+            <span>Copyright &copy; <a href="{{route('manage.copyright')}}" target="_blank">Produksi</a> {{ now()->year }}</span>
         </div>
       </div>
     </div>
