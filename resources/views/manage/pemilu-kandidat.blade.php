@@ -35,9 +35,11 @@
                         <div class="col">
                             <h4 class="text-primary card-title">Daftar Kandidat | {{ $pemilu->name }}</h4>
                         </div>
-                        <button data-target="#addKandidatModal" data-toggle="modal" class="btn btn-success mr-1">
-                            <i class="fa-regular fa-plus"></i>
-                        </button>
+                        <div class="ml-auto">
+                            <button data-target="#addKandidatModal" data-toggle="modal" class="btn btn-success mr-1">
+                                <i class="fa-regular fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -56,13 +58,18 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>
-                                        <a type="button" href="{{ asset('storage/upload/' . $item->image) }}" onclick="previewImage(this.href)" class="btn btn-success w-100" data-toggle="modal" data-target="#previewImageModal">
+                                        <a type="button" href="{{ asset('storage/upload/' . $item->image) }}"
+                                            onclick="previewImage(this.href)" class="btn btn-success w-100"
+                                            data-toggle="modal" data-target="#previewImageModal">
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </td>
                                     <td>
-                                        <button onclick="edit('{{ $pemilu->slug }}', {{ $item->id }})" class="btn btn-primary"><i class="fa-regular fa-edit"></i></button>
-                                        <a href="{{ route('admin.manage.pemilu.kandidat.delete', [$pemilu->slug, $item->id]) }}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>
+                                        <button onclick="edit('{{ $pemilu->slug }}', {{ $item->id }})"
+                                            class="btn btn-primary"><i class="fa-regular fa-edit"></i></button>
+                                        <a href="{{ route('admin.manage.pemilu.kandidat.delete', [$pemilu->slug, $item->id]) }}"
+                                            class="btn btn-danger" data-confirm-delete="true"><i
+                                                class="fa-regular fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -73,7 +80,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addKandidatModal" tabindex="-1" role="dialog" aria-labelledby="addKandidatModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addKandidatModal" tabindex="-1" role="dialog" aria-labelledby="addKandidatModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -82,12 +90,14 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.manage.pemilu.kandidat.add', $pemilu->slug) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.manage.pemilu.kandidat.add', $pemilu->slug) }}" method="POST"
+                    enctype="multipart/form-data">
                     <div class="modal-body">
                         @csrf
                         <div class="form-group">
                             <label for="name">Nama Kandidat</label>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan nama kandidat">
+                            <input type="text" class="form-control" name="name" id="name"
+                                placeholder="Masukkan nama kandidat">
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>
@@ -111,7 +121,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="editKandidatModal" tabindex="-1" role="dialog" aria-labelledby="editKandidatModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editKandidatModal" tabindex="-1" role="dialog" aria-labelledby="editKandidatModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -125,7 +136,8 @@
                         @csrf
                         <div class="form-group">
                             <label for="name">Nama Kandidat</label>
-                            <input type="text" class="form-control" name="name" id="edit-name" placeholder="Masukkan nama kandidat">
+                            <input type="text" class="form-control" name="name" id="edit-name"
+                                placeholder="Masukkan nama kandidat">
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>
@@ -149,7 +161,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="previewImageModal" tabindex="-1" role="dialog" aria-labelledby="previewImageModalLabel" aria-hidden="true">
+    <div class="modal fade" id="previewImageModal" tabindex="-1" role="dialog"
+        aria-labelledby="previewImageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">

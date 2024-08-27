@@ -36,8 +36,10 @@
                         <div class="col">
                             <h4 class="text-primary card-title">Kelola Pemilu</h4>
                         </div>
-                        <button data-target="#addPemiluModal" data-toggle="modal" class="btn btn-success mr-1"><i
-                                class="fa-regular fa-plus"></i></button>
+                        <div class="ml-auto">
+                            <button data-target="#addPemiluModal" data-toggle="modal" class="btn btn-success mr-1"><i
+                                    class="fa-regular fa-plus"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -57,27 +59,17 @@
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->status ? 'Aktif' : 'Nonaktif' }}</td>
                                     <td>
-                                        @if (auth()->user()->id != $item->user_id)
-                                            <a class="btn btn-success" onclick="showWarning('{{ $item->slug }}')"><i
-                                                    class="fa-regular fa-ranking-star"></i></a>
-                                            <button class="btn btn-primary" onclick="showWarning('{{ $item->slug }}')"><i
-                                                    class="fa-regular fa-edit"></i></button>
-                                            <a class="btn btn-warning" onclick="showWarning('{{ $item->slug }}')"><i
-                                                    class="fa-regular fa-door-open"></i></a>
-                                            <button data-target="#voteLogsModal" data-toggle="modal"
-                                                class="btn btn-secondary"><i
-                                                    class="fa-regular fa-clock-rotate-left"></i></button>
-                                            <a href="{{ route('admin.manage.pemilu.delete', $item->slug) }}"
-                                                data-confirm-delete="true" class="btn btn-danger"><i
-                                                    class="fa-regular fa-trash"></i></a>
-                                        @else
-                                            <a href="{{ route('admin.manage.pemilu.kandidat', $item->slug) }}" class="btn btn-success"><i
-                                                    class="fa-regular fa-ranking-star"></i></a>
-                                            <button onclick="edit('{{ $item->slug }}')" class="btn btn-primary"><i
-                                                    class="fa-regular fa-edit"></i></button>
-                                            <button onclick="verify('{{ $item->slug }}')" class="btn btn-warning"><i
-                                                    class="fa-regular fa-door-open"></i></button>
-                                        @endif
+                                        <a href="{{ route('admin.manage.pemilu.kandidat', $item->slug) }}"
+                                            class="btn btn-success"><i class="fa-regular fa-ranking-star"></i></a>
+                                        <button onclick="edit('{{ $item->slug }}')" class="btn btn-primary"><i
+                                                class="fa-regular fa-edit"></i></button>
+                                        <button onclick="result('{{ $item->slug }}')" class="btn btn-warning"><i
+                                                class="fa-regular fa-square-poll-vertical"></i></button>
+                                        <button class="btn btn-secondary"><i
+                                                class="fa-regular fa-clock-rotate-left"></i></button>
+                                        <a href="{{ route('admin.manage.pemilu.delete', $item->slug) }}"
+                                            data-confirm-delete="true" class="btn btn-danger"><i
+                                                class="fa-regular fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -216,12 +208,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="voteLogsModal" tabindex="-1" role="dialog" aria-labelledby="voteLogsModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="resultVotingModal" tabindex="-1" role="dialog"
+        aria-labelledby="resultVotingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="voteLogsModalLabel">Hasil Pemilu</h5>
+                    <h5 class="modal-title" id="resultVotingModalLabel">Hasil Pemilu</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -233,13 +225,15 @@
                                 <div class="card-header" id="collapseDetailVoting">
                                     <div class="row">
                                         <div class="col">
-                                            <h4 class="text-primary card-title">Detail Voting</h4>
+                                            <h4 class="text-primary card-title" id="resultTitle">Detail Voting</h4>
                                         </div>
-                                        <button class="btn btn-primary" data-toggle="collapse"
-                                            data-target="#collapseBody" aria-expanded="true" aria-controls="collapseBody"
-                                            onclick="toggleIcon()">
-                                            <i class="fa-regular fa-plus" id="icon-button"></i>
-                                        </button>
+                                        <div class="ml-auto">
+                                            <button class="btn btn-primary" data-toggle="collapse"
+                                                data-target="#collapseBody" aria-expanded="true"
+                                                aria-controls="collapseBody" onclick="toggleIcon()">
+                                                <i class="fa-regular fa-plus" id="icon-button"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div id="collapseBody" class="collapse" aria-labelledby="collapseDetailVoting"
@@ -247,12 +241,22 @@
                                     <div class="card-body">
                                         <div class="row d-flex align-items-center justify-content-center">
                                             <div class="col-md-6 col-sm-12">
-                                                {{-- <canvas id="statusVote" data-voted="0" data-no-vote="201"
-                                                    style="display: block; height: 0px; width: 0px;" height="0"
-                                                    width="0" class="chartjs-render-monitor"></canvas> --}}
+                                                <canvas id="statusVote" style="display: block; height: 0px; width: 0px;"
+                                                    height="0"nwidth="0" class="chartjs-render-monitor"></canvas>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-primary card-title">Statistik</h4>
+                                </div>
+                                <div class="card-body h-100 d-flex align-items-center justify-content-center">
+                                    <canvas id="statistikVote" style="display: block; height: 0px; width: 0px;"
+                                        height="0"nwidth="0" class="chartjs-render-monitor"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -264,39 +268,12 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="verifyPasswordModal" tabindex="-1" role="dialog"
-        aria-labelledby="verifyPasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="verifyPasswordModalLabel">Verifikasi Password Pemilu</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <form action="" method="POST" id="verifyPasswordForm">
-                    <div class="modal-body">
-                        @csrf
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input id="password" type="text" class="form-control" name="password"
-                                placeholder="Masukkan password">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-success">Verifikasi</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('js')
     {{-- Custom JS for This Page --}}
     <script src="{{ asset('vendor/DataTables/datatables.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function() {
             $('#table-1').DataTable({
@@ -385,22 +362,100 @@
         }
     </script>
     <script>
-        const verify = (slug) => {
-            console.log(slug)
-            const verifyUrl = `{{ route('user.pemilu.verify-password.result', [':slug']) }}`
+        let pieChartIstance;
+        let barChartIstance;
 
-            $('#verifyPasswordForm').attr('action', verifyUrl.replace(':slug', slug))
-            const myModal = new bootstrap.Modal(document.getElementById('verifyPasswordModal'));
-            myModal.show();
-        }
+        const result = (slug) => {
+            const ctx = document.getElementById('statusVote');
 
-        const showWarning = (slug) => {
-            Swal.fire({
-                title: 'Akses Terlarang',
-                text: 'Anda tidak memiliki hak untuk mengedit pemilu ini!',
-                icon: 'warning',
-                confirmButtonText: 'Okay'
-            })
+            if (pieChartIstance) {
+                pieChartIstance.destroy();
+            }
+
+            const pieChart = (data) => {
+                pieChartIstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        datasets: [{
+                            data: [data.voted, data.not_voted],
+                            backgroundColor: [
+                                '#6777ef',
+                                '#cdd3d8',
+                            ],
+                            label: 'Status'
+                        }],
+                        labels: [
+                            'Voted',
+                            'No Vote',
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: 'right',
+                        },
+                    }
+                });
+            }
+
+            const barChart = (data) => {
+                const ctx = document.getElementById('statistikVote');
+
+                if (barChartIstance) {
+                    barChartIstance.destroy();
+                }
+
+                barChartIstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Count Vote',
+                            data: data.data,
+                            borderWidth: 2,
+                            backgroundColor: '#6777ef',
+                            borderColor: '#6777ef',
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#ffffff',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                gridLines: {
+                                    drawBorder: false,
+                                    color: '#f2f2f2',
+                                },
+                                ticks: {
+                                    beginAtZero: true,
+                                    stepSize: 150
+                                }
+                            }],
+                            xAxes: [{
+                                ticks: {
+                                    display: false
+                                },
+                                gridLines: {
+                                    display: false
+                                }
+                            }]
+                        },
+                    }
+                });
+            }
+
+            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/result`, (data) => {
+                $('#resultTitle').text(`Detail Voting | Total Users : ${data.total_users}`)
+                pieChart(data.pie_charts)
+                barChart(data.bar_charts);
+
+                const myModal = new bootstrap.Modal(document.getElementById('resultVotingModal'));
+                myModal.show();
+            });
         }
     </script>
 @endpush

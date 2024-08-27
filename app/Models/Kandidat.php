@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Kandidat extends Model
 {
     use HasFactory;
+
+    public function voting()
+    {
+        return $this->hasMany(Voting::class);
+    }
 }

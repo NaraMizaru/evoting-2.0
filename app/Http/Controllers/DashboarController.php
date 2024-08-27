@@ -17,7 +17,15 @@ class DashboarController extends Controller
 {
     public function dashboard()
     {
-        $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('status', 1)->get();
+        $user = Auth::user();
+
+        if ($user->role == 'admin') {
+            $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('status', 1)->where('user_id', $user->id)->get();
+        } else {
+            $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('status', 1)->get();
+        }
+
+
         $notificationCount = Notification::count();
         $notification = Notification::latest()->limit(5)->get();
 

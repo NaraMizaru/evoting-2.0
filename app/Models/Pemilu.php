@@ -13,4 +13,14 @@ class Pemilu extends Model
     {
         return $this->hasMany(Notification::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function voting()
+    {
+        return $this->hasMany(Voting::class);
+    }
 }

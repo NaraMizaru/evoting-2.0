@@ -20,6 +20,8 @@ class PemiluController extends Controller
         $notificationCount = Notification::count();
         $notification = Notification::latest()->limit(5)->get();
 
+        // $kandidat = Kandidat::where('pemilu_id', )
+
         confirmDelete('Hapus Pemilu', 'Apakah kamu yakin ingin menghapus pemilu?');
         return view('manage.pemilu', compact([
             'pemilu',

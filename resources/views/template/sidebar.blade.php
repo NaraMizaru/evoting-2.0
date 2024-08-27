@@ -11,12 +11,12 @@
     <li class="nav-item {{ $menu_type == 'dashboard' ? 'active' : '' }}">
         @if (auth()->user()->role == 'admin')
             <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                <i class="fa-regular fa-fw fa-tachometer-alt"></i>
+                <i class="fa-regular fa-fw fa-house"></i>
                 <span>Dashboard</span>
             </a>
         @else
             <a href="{{ route('user.dashboard') }}" class="nav-link">
-                <i class="fa-regular fa-fw fa-tachometer-alt"></i>
+                <i class="fa-regular fa-fw fa-house"></i>
                 <span>Dashboard</span>
             </a>
         @endif
