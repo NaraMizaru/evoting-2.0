@@ -18,4 +18,9 @@ class Voting extends Model
     {
         return $this->belongsTo(Pemilu::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered w-100 nowrap" id="table-1">
+                    <table class="table table-bordered w-100" id="table-1">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
@@ -65,7 +65,7 @@
                                                 class="fa-regular fa-edit"></i></button>
                                         <button onclick="result('{{ $item->slug }}')" class="btn btn-warning"><i
                                                 class="fa-regular fa-square-poll-vertical"></i></button>
-                                        <button class="btn btn-secondary"><i
+                                        <button onclick="voteLogs('{{ $item->slug }}')" class="btn btn-secondary"><i
                                                 class="fa-regular fa-clock-rotate-left"></i></button>
                                         <a href="{{ route('admin.manage.pemilu.delete', $item->slug) }}"
                                             data-confirm-delete="true" class="btn btn-danger"><i
@@ -222,7 +222,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header" id="collapseDetailVoting">
+                                <div class="card-header" id="collapseResultVoting">
                                     <div class="row">
                                         <div class="col">
                                             <h4 class="text-primary card-title" id="resultTitle">Detail Voting</h4>
@@ -236,13 +236,30 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="collapseBody" class="collapse" aria-labelledby="collapseDetailVoting"
-                                    data-parent="#collapseDetailVoting">
+                                <div id="collapseBody" class="collapse" aria-labelledby="collapseResultVoting"
+                                    data-parent="#collapseResultVoting">
                                     <div class="card-body">
                                         <div class="row d-flex align-items-center justify-content-center">
-                                            <div class="col-md-6 col-sm-12">
+                                            <div class="col-sm-12 col-md-6">
                                                 <canvas id="statusVote" style="display: block; height: 0px; width: 0px;"
-                                                    height="0"nwidth="0" class="chartjs-render-monitor"></canvas>
+                                                    height="0"nwidth="0" class="chartjs-render-monitor mb-3"></canvas>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered w-100">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center">No</th>
+                                                                <th>Kelas</th>
+                                                                <th>Jumlah Yang Vote</th>
+                                                                <th class="text-right">
+                                                                    <a href="" class="btn btn-danger" id="exportResultPdf"><i class="fa-regular fa-file-pdf"></i></a>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="resultTableBody"></tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -260,6 +277,39 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-link" type="button" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="voteLogsModal" tabindex="-1" role="dialog" aria-labelledby="voteLogsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="voteLogsModalLabel">Vote Logs</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-primary text-center" id="voteLogsTitle">Vote Logs | </h4>
+                    <hr class="divider w-75">
+                    <div class="table-responsive">
+                        <table class="table table-bordered w-100">
+                            <thead>
+                                <th class="text-center">No</th>
+                                <th>Nama Pemilih</th>
+                                <th>Nama Pemilu</th>
+                                <th>Waktu Voting</th>
+                            </thead>
+                            <tbody id="voteLogsTableBody">
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -342,6 +392,27 @@
                 });
 
                 const myModal = new bootstrap.Modal(document.getElementById('editPemiluModal'));
+                myModal.show();
+            })
+        }
+    </script>
+    <script>
+        const voteLogs = (slug) => {
+            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/vote-logs`, (data) => {
+                $('#voteLogsTitle').text(data.name)
+
+                $('#voteLogsTableBody').empty();
+
+                data.voteLogs.map((logs, i) => {
+                    $('<tr>').appendTo('#voteLogsTableBody').append(
+                        `<td class="text-center">${i + 1}</td>`,
+                        `<td>${logs.user.fullname}</td>`,
+                        `<td>${logs.pemilu.name}</td>`,
+                        `<td>${logs.vote_time}</td>`
+                    )
+                })
+
+                const myModal = new bootstrap.Modal(document.getElementById('voteLogsModal'));
                 myModal.show();
             })
         }
@@ -449,9 +520,21 @@
             }
 
             $.getJSON(`${window.location.origin}/api/pemilu/${slug}/result`, (data) => {
+                const exportUrl = `{{ route('admin.manage.pemilu.export.result', ':slug') }}`
+                $('#exportResultPdf').attr('href', exportUrl.replace(':slug', slug))
+
                 $('#resultTitle').text(`Detail Voting | Total Users : ${data.total_users}`)
                 pieChart(data.pie_charts)
                 barChart(data.bar_charts);
+
+                $('#voteLogsTableBody').empty();    
+                data.votes_per_class.map((kelas, i) => {
+                    $('<tr>').appendTo('#resultTableBody').append(
+                        `<td class="text-center">${i + 1}</td>`,
+                        `<td>${kelas.name}</td>`,
+                        `<td colspan='2'>${kelas.votes_count}</td>`
+                    )
+                })
 
                 const myModal = new bootstrap.Modal(document.getElementById('resultVotingModal'));
                 myModal.show();

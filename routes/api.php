@@ -26,3 +26,4 @@ Route::get('/user/{id}', [UserController::class, 'getUser']);
 Route::get('/pemilu/{slug}/', [PemiluController::class, 'getPemilu']);
 Route::get('/pemilu/{slug}/kandidat/{id}', [PemiluController::class, 'getKandidat']);
 Route::get('/pemilu/{slug}/result', [PemiluController::class, 'getResultVoting']);
+Route::get('/pemilu/{slug}/vote-logs', [PemiluController::class, 'getVoteLogs']);

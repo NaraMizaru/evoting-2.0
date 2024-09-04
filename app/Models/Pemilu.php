@@ -23,4 +23,9 @@ class Pemilu extends Model
     {
         return $this->hasMany(Voting::class);
     }
+
+    public function voteLogs()
+    {
+        return $this->hasMany(VoteLogs::class);
+    }
 }

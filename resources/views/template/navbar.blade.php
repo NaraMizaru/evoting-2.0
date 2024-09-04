@@ -55,12 +55,12 @@
                     <img src="{{ asset('assets/img/avatar-1.png') }}"
                         class="img-profile rounded-circle font-weight-bold"></img>
                 @else
-                    <img src="{{ asset(auth()->user()->profile_picture) }}"
+                    <img src="{{ asset('/storage/upload/' . auth()->user()->profile_picture) }}"
                         class="img-profile rounded-circle font-weight-bold"></img>
                 @endif
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="">
+                <a class="dropdown-item" href="{{ route('profile') }}">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>

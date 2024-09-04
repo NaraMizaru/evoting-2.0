@@ -61,4 +61,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pemilu::class);
     }
+
+    public function voteLogs()
+    {
+        return $this->hasMany(VoteLogs::class);
+    }
+
+    public function voting()
+    {
+        return $this->hasMany(Voting::class);
+    }
 }

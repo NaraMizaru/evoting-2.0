@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kandidat;
+use App\Models\Kelas;
 use App\Models\Pemilu;
 use App\Models\User;
+use App\Models\VoteLogs;
 use Illuminate\Http\Request;
 
 class PemiluController extends Controller
@@ -59,9 +61,17 @@ class PemiluController extends Controller
             $data[] = $item->voting_count;
         }
 
-        $totalUsers = User::count();
+        $totalUsers = User::where('role', '!=', 'admin')->count();
         $votedUsers = $pemilu->voting()->distinct('user_id')->count();
         $notVotedUsers = $totalUsers - $votedUsers;
+
+        $votesPerClass = Kelas::withCount([
+            'user as votes_count' => fn ($q) => $q->whereHas('voting', fn ($q) => $q->where('pemilu_id', $pemilu->id))
+        ])->get()->map(fn ($kelas) => [
+            'name' => $kelas->name,
+            'votes_count' => $kelas->votes_count
+        ]);
+        
 
         return response()->json([
             'total_users' => $totalUsers,
@@ -73,6 +83,22 @@ class PemiluController extends Controller
                 'labels' => $labels,
                 'data' => $data
             ],
+            'votes_per_class' => $votesPerClass,
+        ]);
+    }
+
+    public function getVoteLogs($slug)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return response()->json(['message' => 'Pemilu not found'], 404);
+        }
+
+        $logs = VoteLogs::where('pemilu_id', $pemilu->id)->with(['user:id,fullname', 'pemilu:id,name'])->get();
+        return response()->json([
+            'name' => $pemilu->name,
+            'voteLogs' => $logs
         ]);
     }
 }

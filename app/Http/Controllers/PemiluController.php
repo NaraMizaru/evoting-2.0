@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kandidat;
+use App\Models\Kelas;
 use App\Models\Notification;
 use App\Models\Pemilu;
+use App\Models\Voting;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -236,5 +239,32 @@ class PemiluController extends Controller
 
         $kandidat->delete();
         return redirect()->back()->with('success', 'Kandidat berhasil dihapus');
+    }
+
+    public function exportResultPdf($slug)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        }
+
+        $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
+
+        if (!$kandidat) {
+            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
+        }
+
+        $votedUsers = $pemilu->voting()->distinct('user_id')->count();
+        $votesPerClass = Kelas::withCount([
+            'user as votes_count' => fn($q) => $q->whereHas('voting', fn($q) => $q->where('pemilu_id', $pemilu->id))
+        ])->get();
+
+        $pdf = Pdf::loadView('export.export-result', compact([
+            'kandidat',
+            'votedUsers',
+            'votesPerClass'
+        ]));
+        return $pdf->download('Hasil ' . $pemilu->name . '.pdf');
     }
 }
