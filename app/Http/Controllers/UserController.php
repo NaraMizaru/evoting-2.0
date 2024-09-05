@@ -13,20 +13,30 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
-    public function manageUser()
+    public function manageUser(Request $request)
     {
-        $user = User::where('role', '!=', 'admin')->orderBy('kelas_id', 'asc')->get();
         $kelas = Kelas::orderBy('name', 'asc')->get();
         $notification = Notification::latest()->limit(5)->get();
         $notificationCount = Notification::count();
 
         confirmDelete('Hapus User', 'Apakah kamu yakin ingin menghapus user?');
-        return view('manage.users', compact([
-            'user',
-            'kelas',
-            'notification',
-            'notificationCount'
-        ]), ['menu_type' => 'manage-user']);
+        if ($request->has('admin')) {
+            $user = User::where('role', 'admin')->orderBy('fullname', 'asc')->get();
+            return view('manage.users-admin', compact([
+                'user',
+                'kelas',
+                'notification',
+                'notificationCount'
+            ]), ['menu_type' => 'manage-user']);
+        } else {
+            $user = User::where('role', '!=', 'admin')->orderBy('kelas_id', 'asc')->get();
+            return view('manage.users', compact([
+                'user',
+                'kelas',
+                'notification',
+                'notificationCount'
+            ]), ['menu_type' => 'manage-user']);
+        }
     }
 
     public function addUser(Request $request)

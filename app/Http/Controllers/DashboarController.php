@@ -119,7 +119,7 @@ class DashboarController extends Controller
             $notification->pemilu_id = $pemilu->id;
             $notification->save();
 
-            Alert::success('Success', 'Anda telah melakukan voting kepada');
+            Alert::success('Success', 'Anda telah melakukan voting');
             return redirect()->route('user.dashboard');
         }
     }

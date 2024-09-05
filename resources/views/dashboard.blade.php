@@ -51,9 +51,9 @@
                     </div>
                 </div>
             @else
-                @foreach ($pemilu as $item)
-                    <div class="col-12">
-                        <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        @foreach ($pemilu as $item)
                             <div class="col-12 col-md-4 col-lg-4">
                                 <div class="card h-100">
                                     <div class="card-header bg-primary">
@@ -63,13 +63,14 @@
                                         <p class="card-text">{{ $item->description }}</p>
                                     </div>
                                     <div class="card-footer">
-                                        <a href="{{ route('admin.manage.pemilu') }}" class="btn btn-primary float-right"><i class="fa-regular fa-eye mr-1"></i>Detail</a>
+                                        <a href="{{ route('admin.manage.pemilu') }}" class="btn btn-primary float-right"><i
+                                                class="fa-regular fa-eye mr-1"></i>Detail</a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endforeach
                     </div>
-                @endforeach
+                </div>
             @endif
         </div>
     @else

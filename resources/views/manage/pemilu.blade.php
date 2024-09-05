@@ -527,7 +527,7 @@
                 pieChart(data.pie_charts)
                 barChart(data.bar_charts);
 
-                $('#voteLogsTableBody').empty();    
+                $('#resultTableBody').empty();    
                 data.votes_per_class.map((kelas, i) => {
                     $('<tr>').appendTo('#resultTableBody').append(
                         `<td class="text-center">${i + 1}</td>`,
