@@ -13,20 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
-<<<<<<< HEAD
-    public function copyright(Request $request){
-        $notification = Notification::latest()->limit(5)->get();
-        $notificationCount = Notification::count();
-        return view("manage.copyright", compact([
-            'notification',
-            'notificationCount'
-        ]), ['menu_type' => '']);
-
-    }
-    public function manageUser()
-=======
     public function manageUser(Request $request)
->>>>>>> 9f198d64be5a6aae73b6fec6c3d83ae09ab68cd9
     {
         $kelas = Kelas::orderBy('name', 'asc')->get();
         $notification = Notification::latest()->limit(5)->get();
