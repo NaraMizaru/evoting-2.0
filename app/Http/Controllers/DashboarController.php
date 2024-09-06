@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kandidat;
 use App\Models\Notification;
 use App\Models\Pemilu;
+use App\Models\VoteLogs;
 use App\Models\Voting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +18,15 @@ class DashboarController extends Controller
 {
     public function dashboard()
     {
-        $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('status', 1)->get();
+        $user = Auth::user();
+
+        if ($user->role == 'admin') {
+            $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('status', 1)->where('user_id', $user->id)->get();
+        } else {
+            $pemilu = Pemilu::orderBy('created_at', 'DESC')->where('status', 1)->get();
+        }
+
+
         $notificationCount = Notification::count();
         $notification = Notification::latest()->limit(5)->get();
 
@@ -66,7 +75,6 @@ class DashboarController extends Controller
             return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
-
         if ($request->password == $pemilu->password) {
             Session::put('pemilu_' . $pemilu->slug . '_verified', true);
         } else {
@@ -99,41 +107,20 @@ class DashboarController extends Controller
         if ($voting->save()) {
             Session::remove('pemilu_' . $pemilu->slug . '_verified');
 
+            $user = Auth::user();
+            $voteLogs = new VoteLogs();
+            $voteLogs->user_id = $user->id;
+            $voteLogs->pemilu_id = $pemilu->id;
+            $voteLogs->vote_time = Carbon::now()->translatedFormat('l, d F Y | H.i');
+            $voteLogs->save();
+
             $notification = new Notification();
             $notification->user_id = Auth::id();
             $notification->pemilu_id = $pemilu->id;
             $notification->save();
 
-            Alert::success('Success', 'Anda telah melakukan voting kepada ' . $kandidat->nama);
+            Alert::success('Success', 'Anda telah melakukan voting');
             return redirect()->route('user.dashboard');
         }
-    }
-
-    public function verifyPasswordResult(Request $request, $slug)
-    {
-        $pemilu = Pemilu::where('slug', $slug)->first();
-
-        if (!$pemilu) {
-            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
-        }
-
-        $validator = Validator::make($request->all(), [
-            'password' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
-        }
-
-
-        if ($request->password == $pemilu->password) {
-            Session::put('pemilu_' . $pemilu->slug . '_verified', true);
-        } else {
-            Alert::error('Error', 'Password Salah');
-            return redirect()->back();
-        }
-
-        // dd(Session::get('pemilu_' . $pemilu->slug . '_verified'));
-        return redirect()->route('user.pemilu.join', $slug);
     }
 }

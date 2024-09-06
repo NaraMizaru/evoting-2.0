@@ -54,7 +54,26 @@
                     </div>
                 </div>
             @else
-
+                <div class="col-12">
+                    <div class="row">
+                        @foreach ($pemilu as $item)
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary">
+                                        <h4 class="card-title text-white">{{ $item->name }}</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ $item->description }}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="{{ route('admin.manage.pemilu') }}" class="btn btn-primary float-right"><i
+                                                class="fa-regular fa-eye mr-1"></i>Detail</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             @endif
         </div>
     @else
@@ -66,10 +85,12 @@
                             <div class="col">
                                 <h4 class="text-primary card-title">Daftar Pemilu Yang Sedang Aktif</h4>
                             </div>
-                            <button class="btn btn-primary" data-toggle="collapse" data-target="#collapseBody"
-                                aria-expanded="true" aria-controls="collapseBody" onclick="toggleIcon()">
-                                <i class="fa-regular fa-plus" id="icon-button"></i>
-                            </button>
+                            <div class="ml-auto">
+                                <button class="btn btn-primary" data-toggle="collapse" data-target="#collapseBody"
+                                    aria-expanded="true" aria-controls="collapseBody" onclick="toggleIcon()">
+                                    <i class="fa-regular fa-plus" id="icon-button"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div id="collapseBody" class="collapse" aria-labelledby="collapseVotingAktif"
