@@ -37,9 +37,13 @@ class AuthController extends Controller
                 $user = Auth::user();
                 Alert::success('Login successful', 'Happy Voting')->persistent(true);
                 return redirect()->route('admin.dashboard')->with('success', 'Welcome to the dashboard, ' . $user->fullname);
-            } else {
+            } else if ($auth && Auth::user()->role != 'admin') {
                 $user = Auth::user();
+                Alert::success('Login successful', 'Happy Voting')->persistent(true);
                 return redirect()->route('user.dashboard')->with('success', 'Welcome to the dashboard, ' . $user->fullname);
+            } else {
+                Auth::logout();
+                return redirect()->back()->with('error', 'Username atau password salah');
             }
         }
 
@@ -48,6 +52,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             if ($user->role != 'admin') {
+                Alert::success('Login successful', 'Happy Voting')->persistent(true);
                 return redirect()->route('user.dashboard')->with('success', 'Welcome to the dashboard, ' . $user->fullname);
             } else {
                 Auth::logout();

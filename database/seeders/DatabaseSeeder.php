@@ -29,13 +29,5 @@ class DatabaseSeeder extends Seeder
             'unencrypted_password' => 'admin',
             'role' => 'admin',
         ]);
-
-        User::create([
-            'fullname' => 'Administrator-2',
-            'username' => 'admin2',
-            'password' => bcrypt('admin2'),
-            'unencrypted_password' => 'admin2',
-            'role' => 'admin',
-        ]);
     }
 }
