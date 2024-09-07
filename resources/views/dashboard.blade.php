@@ -7,6 +7,7 @@
 @endpush
 
 @section('content')
+
     <div class="row">
         <div class="col-12">
             @if ($errors->any())
@@ -248,4 +249,5 @@
             myModal.show();
         }
     </script>
+    <script src="{{ asset('../../public/js/loader.js')}}"></script>
 @endpush
