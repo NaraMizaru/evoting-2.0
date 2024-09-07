@@ -3,8 +3,9 @@
     margin: 0;
     box-sizing: border-box;
 }
-#preloader{
-    background: #fff url('../assets/img/logo_white.gif') no-repeat center center;
+
+#preloader {
+    background: #fff url("../assets/img/logo_white.gif") no-repeat center center;
     background-size: cover;
     background-size: 15%;
     height: 100vh;
@@ -12,8 +13,16 @@
     position: fixed;
     z-index: 9999;
 }
+
 .bg-login {
-    background-image: url('../assets/img/background_login.jpg');
+    background-image: url("../assets/img/background_login.jpg");
     background-position: center;
     background-size: cover;
-  }
+}
+
+.card-zooming {
+    transition: all 0.3s;
+}
+.card-zooming:hover {
+    scale: 0.99;
+}

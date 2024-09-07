@@ -1,45 +1,48 @@
-
-@keyframes shine {
-    0%{
-        background-position: 0;
-    }
-    100%{
-        background-position: 500px;
-    }
-}
-body{
+body {
+    background-color: black;
     overflow-y: hidden;
-
 }
-.box{
+
+.container {
     height: 100vh;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     background: black;
     display: grid;
     padding: 0;
     margin: 0;
 }
-.box .box2{
+
+.container .wrapper {
     gap: 100px;
     display: flex;
     place-self: center;
 }
-@media (max-width:900px) {
-.box .box2{
-    display: grid;
-    grid-template-columns: repeat(2fr, 1fr);
-}
-}
-.box .btn-shine{
+
+.container .text-shine {
     color: #fff;
     background: linear-gradient(to right, #4d4d4d 0, white 13%, #4d4d4d 20%);
     background-position: 0;
-    -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shine 4s infinite linear;
     font-weight: 800;
-    text-transform: uppercase;
     font-size: 37px;
     text-decoration: none;
     text-align: center;
+}
+
+@keyframes shine {
+    0% {
+        background-position: 0;
+    }
+    100% {
+        background-position: 500px;
+    }
+}
+
+@media (max-width: 900px) {
+    .container .wrapper {
+        display: grid;
+        grid-template-columns: repeat(2fr, 1fr);
+    }
 }

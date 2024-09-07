@@ -19,9 +19,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::redirect('/', '/login');
+
+Route::get('/helloworld', function() {
+    return 'helloworld';
 });
+
 Route::get('/login', [AuthController::class, 'indexLogin'])->name('view.login');
 Route::post('/login', [AuthController::class, 'login'])->name('post.login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('post.logout')->middleware('auth');
@@ -65,4 +68,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user'], function () {
     Route::post('/pemilu/{slug}/verify-password/join', [DashboarController::class, 'verifyPasswordJoin'])->name('user.pemilu.verify-password.join');
 });
 
-Route::get('/copyright', [UserController::class, 'copyright'])->name('manage.copyright');
+Route::get('/copyright', function() {
+    return view('copyright');
+})->name('copyright');
