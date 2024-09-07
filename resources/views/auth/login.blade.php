@@ -9,7 +9,8 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-12 text-center d-lg-none d-block">
-        <img src="{{ asset('assets/img/logo_smea.png') }}" alt="">
+        <img class="img-fluid" width="250" height="250" src="{{ asset('assets/img/e-vote-logo-3.png') }}" alt="">
+        {{-- <img src="{{ asset('assets/img/logo_smea.png') }}" alt=""> --}}
       </div>
       <div class="col-xl-10 col-lg-12 col-md-9">
         <div class="card o-hidden border-0 shadow-lg my-5">
