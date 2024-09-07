@@ -4,7 +4,8 @@
     box-sizing: border-box;
 }
 #preloader{
-    background: #fff url('../assets/img/logo_black.gif') no-repeat center center cover;
+    background: #fff url('../assets/img/logo_white.gif') no-repeat center center;
+    background-size: cover;
     background-size: 15%;
     height: 100vh;
     width: 100%;
