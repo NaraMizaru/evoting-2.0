@@ -4,7 +4,7 @@
       <div class="container my-auto">
         <div class="copyright text-left my-auto">
             {{--https://github.com/NaraMizaru--}}
-            <span>Copyright &copy; <a href="{{route('manage.copyright')}}" target="_blank">Produksi</a> {{ now()->year }}</span>
+            <span>Copyright &copy; <a href="{{route('copyright')}}" target="_blank">RPL Produksi</a> {{ now()->year }}</span>
         </div>
       </div>
     </div>

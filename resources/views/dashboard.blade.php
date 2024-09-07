@@ -3,11 +3,9 @@
 
 @push('css')
     {{-- Custom CSS for This Page --}}
-    <link rel="stylesheet" href="{{asset('css/users/dahsboard.css')}}">
 @endpush
 
 @section('content')
-
     <div class="row">
         <div class="col-12">
             @if ($errors->any())
@@ -43,15 +41,15 @@
             @endif
             @if ($pemilu->isEmpty())
                 <div class="col-12">
-                    <div class="card p-bd">
-                        <a data-target="#addPemiluModal"  data-toggle="modal" style="cursor:pointer;">
-                        <div class="card-body">
-                            <div class="p-5">
-                                <h4 class="text-primary text-center">Tidak Ada Pemilu Yang Sedang Aktif</h4>
-                                <p class="text-center" style="border-bottom: 1px solid #4A5568;">Buat Pemilu <span>Disini</span></p>
+                    <div class="card card-zooming">
+                        <a data-target="#addPemiluModal" data-toggle="modal" style="cursor:pointer;">
+                            <div class="card-body">
+                                <div class="p-5">
+                                    <h4 class="text-primary text-center">Tidak Ada Pemilu Yang Sedang Aktif</h4>
+                                    <p class="text-center">Buat Pemilu <span>Disini</span></p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
                     </div>
                 </div>
             @else
@@ -102,7 +100,7 @@
                                     <div class="col-12 col-md-6 col-lg-4 mt-3">
                                         <div class="card h-100">
                                             <div class="card-header bg-primary">
-                                                <h5 class="card-title text-white m">{{ $item->name }}</h5>
+                                                <h5 class="card-title text-white">{{ $item->name }}</h5>
                                             </div>
                                             <div class="card-body">
                                                 <p class="card-text">{{ $item->description }}</p>
@@ -158,68 +156,68 @@
     @endif
 
     <div class="modal fade" id="addPemiluModal" tabindex="-1" role="dialog" aria-labelledby="addPemiluModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addPemiluModalLabel">Tambah Pemilu</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPemiluModalLabel">Tambah Pemilu</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="{{ route('admin.manage.pemilu.add') }}" method="POST" id="add-pemilu-form">
+                    <div class="modal-body">
+                        @csrf
+                        <div class="form-group">
+                            <label for="name">Nama Pemilu</label>
+                            <input type="text" class="form-control" name="name" id="name"
+                                placeholder="Masukkan nama pemilu" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Deskripsi</label>
+                            <textarea class="form-control" name="description" id="description" cols="30" rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Private</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="is_private"
+                                    id="add-radio-private-yes" value="1" checked>
+                                <label class="form-check-label" for="is_private1">
+                                    Ya
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="is_private"
+                                    id="add-radio-private-no" value="0">
+                                <label class="form-check-label" for="is_private2">
+                                    Tidak
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="add-pemilu-group">
+                            <label for="password">Password</label>
+                            <input type="text" name="password" id="password" class="form-control"
+                                placeholder="Masukan password">
+                        </div>
+                        <div class="form-group" id="add-pemilu-group">
+                            <label for="status">Status</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="status" value="1"
+                                    id="add-status-checkbox" checked>
+                                <label class="form-check-label" for="add-status-checkbox">
+                                    Aktif
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">Tambah</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('admin.manage.pemilu.add') }}" method="POST" id="add-pemilu-form">
-                <div class="modal-body">
-                    @csrf
-                    <div class="form-group">
-                        <label for="name">Nama Pemilu</label>
-                        <input type="text" class="form-control" name="name" id="name"
-                            placeholder="Masukkan nama pemilu" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Deskripsi</label>
-                        <textarea class="form-control" name="description" id="description" cols="30" rows="5"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Private</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="is_private" id="add-radio-private-yes"
-                                value="1" checked>
-                            <label class="form-check-label" for="is_private1">
-                                Ya
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="is_private" id="add-radio-private-no"
-                                value="0">
-                            <label class="form-check-label" for="is_private2">
-                                Tidak
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="add-pemilu-group">
-                        <label for="password">Password</label>
-                        <input type="text" name="password" id="password" class="form-control"
-                            placeholder="Masukan password">
-                    </div>
-                    <div class="form-group" id="add-pemilu-group">
-                        <label for="status">Status</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="status" value="1"
-                                id="add-status-checkbox" checked>
-                            <label class="form-check-label" for="add-status-checkbox">
-                                Aktif
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-link" type="button" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success">Tambah</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 @endsection
 
 @push('js')
@@ -249,5 +247,5 @@
             myModal.show();
         }
     </script>
-    <script src="{{ asset('../../public/js/loader.js')}}"></script>
+    <script src="{{ asset('../../public/js/loader.js') }}"></script>
 @endpush
