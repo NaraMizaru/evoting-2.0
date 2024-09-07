@@ -12,8 +12,18 @@
 .m{
     padding-top: 5px;
 }
+
+.card-body {
+    display: flex;
+}
+.card-body .row{
+    justify-content: center;
+}
 .img-fluid{
     border-radius: 5px;
+    /* min-width: 512px; */
+    /* min-height: 400px; */
+    /* object-fit: cover; */
     /* box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px; */
 }
 .cd-body-color{

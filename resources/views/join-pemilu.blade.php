@@ -13,6 +13,7 @@
                 <div class="card-header">
                     <h4 class="card-title text-primary">Daftar Kandidat | {{ $pemilu->name }}</h4>
                 </div>
+
                 <div class="card-body cd-body-color">
                     <div class="row">
                         @foreach ($kandidat as $item)
