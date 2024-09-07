@@ -160,4 +160,9 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'User berhasil dihapus');
     }
+
+    public function copyright()
+    {
+        return view('manage.copyright');
+    }
 }
