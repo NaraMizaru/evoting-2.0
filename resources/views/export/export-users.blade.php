@@ -15,7 +15,7 @@
         <tbody>
             @if ($users->isEmpty())
                 <tr>
-                    <td colspan="5" style="text-align: center;">Data User Tidak Tersedia</td>
+                    <td colspan="5" style="text-align: center;">Data User Belum Tersedia</td>
                 </tr>
             @else
                 @foreach ($users as $item)

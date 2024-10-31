@@ -188,7 +188,7 @@
     </script>
     <script>
         const edit = (id) => {
-            $.getJSON(`${window.location.origin}/api/class/${id}`, (data) => {
+            $.getJSON(`${window.location.origin}/admin/manage/class/${id}/data`, (data) => {
                 const updateUrl = `{{ route('admin.manage.class.update', ':id') }}`
 
                 $('#editClassForm').attr('action', updateUrl.replace(':id', id))

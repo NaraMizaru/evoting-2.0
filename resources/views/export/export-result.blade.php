@@ -43,13 +43,19 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($votesPerClass as $item)
-                <tr>
-                    <td style="text-align: center">{{ $loop->iteration }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td style="text-align: center">{{ $item->votes_count }}</td>
-                </tr>
-            @endforeach
+            @if ($votesPerClass->isEmpty())
+            <tr>
+                <td colspan="3" style="text-align: center">Data Voting Belum Tersedia</td>
+            </tr>
+            @else
+                @foreach ($votesPerClass as $item)
+                    <tr>
+                        <td style="text-align: center">{{ $loop->iteration }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td style="text-align: center">{{ $item->votes_count }}</td>
+                    </tr>
+                @endforeach
+            @endif
         </tbody>
     </table>
 @endsection

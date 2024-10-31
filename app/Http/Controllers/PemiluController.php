@@ -6,6 +6,8 @@ use App\Models\Kandidat;
 use App\Models\Kelas;
 use App\Models\Notification;
 use App\Models\Pemilu;
+use App\Models\User;
+use App\Models\VoteLogs;
 use App\Models\Voting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -124,147 +126,77 @@ class PemiluController extends Controller
         return redirect()->back()->with('success', 'Pemilu berhasil dihapus');
     }
 
-    public function kandidatPemilu($slug)
+    public function dataPemilu($slug)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
-        $notificationCount = Notification::count();
-        $notification = Notification::latest()->limit(5)->get();
 
         if (!$pemilu) {
-            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+            return response()->json(['message' => 'Pemilu not found'], 404);
         }
 
-        $user = Auth::user();
-
-        if ($user->id != $pemilu->user_id) {
-            Alert::warning('Akses Terlarang', 'Anda tidak memiliki akses');
-            return redirect()->back();
-        }
-
-        $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
-
-        confirmDelete('Hapus Kandidat', 'Apakah kamu yakin ingin menghapus kandidat?');
-        return view('manage.pemilu-kandidat', compact([
-            'pemilu',
-            'kandidat',
-            'notification',
-            'notificationCount'
-        ]), ['menu_type' => 'manage-pemilu']);
+        return response()->json($pemilu);
     }
 
-    public function addKandidatPemilu($slug, Request $request)
+    public function dataResultVoting($slug)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
 
         if (!$pemilu) {
-            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+            return response()->json(['message' => 'Pemilu not found'], 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'vision_mission' => 'required',
-            'image' => 'required|file|image|mimes:png,jpg,jpeg'
-        ]);
+        $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->withCount('voting')->get();
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        if ($kandidat->isEmpty()) {
+            return response()->json(['message' => 'Kandidat not found'], 404);
         }
 
-        $fileName = Str::random(8) . '.' . $request->file('image')->getClientOriginalExtension();
+        $labels = [];
+        $data = [];
 
-        $kandidat = new Kandidat();
-        $kandidat->name = $request->name;
-        $kandidat->description = $request->description;
-        $kandidat->vision_mission = $request->vision_mission;
-        $kandidat->image = $request->file('image')->storeAs('pemilu/' . $pemilu->slug, $fileName);
-        $kandidat->pemilu_id = $pemilu->id;
-        $kandidat->save();
-
-        return redirect()->back()->with('success', 'Kandidat berhasil ditambahkan');
-    }
-
-    public function updateKandidatPemilu(Request $request,  $slug, $id)
-    {
-        $pemilu = Pemilu::where('slug', $slug)->first();
-
-        if (!$pemilu) {
-            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
+        foreach ($kandidat as $item) {
+            $labels[] = $item->name;
+            $data[] = $item->voting_count;
         }
 
-        $kandidat = Kandidat::where('id', $id)->where('pemilu_id', $pemilu->id)->first();
-
-        if (!$kandidat) {
-            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'vision_mission' => 'required',
-            'image' => 'nullable|file|image|mimes:png,jpg,jpeg'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
-        }
-
-        $kandidat->name = $request->name;
-        $kandidat->description = $request->description;
-        $kandidat->vision_mission = $request->vision_mission;
-
-        if ($request->hasFile('image')) {
-            $fileName = Str::random(8) . '.' . $request->file('image')->getClientOriginalExtension();
-            $kandidat->image = $request->file('image')->storeAs('pemilu/' . $pemilu->slug, $fileName);
-        }
-
-        $kandidat->save();
-
-        return redirect()->back()->with('success', 'Kandidat berhasil diubah');
-    }
-
-    public function deleteKandidatPemilu($slug, $id)
-    {
-        $pemilu = Pemilu::where('slug', $slug)->first();
-
-        if (!$pemilu) {
-            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
-        }
-
-        $kandidat = Kandidat::where('id', $id)->where('pemilu_id', $pemilu->id)->first();
-
-        if (!$kandidat) {
-            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
-        }
-
-        $kandidat->delete();
-        return redirect()->back()->with('success', 'Kandidat berhasil dihapus');
-    }
-
-    public function exportResultPdf($slug)
-    {
-        $pemilu = Pemilu::where('slug', $slug)->first();
-
-        if (!$pemilu) {
-            return redirect()->back()->with('error', 'Pemilu yang dicari tidak ditemukan');
-        }
-
-        $kandidat = Kandidat::where('pemilu_id', $pemilu->id)->get();
-
-        if (!$kandidat) {
-            return redirect()->back()->with('error', 'Kandidat yang dicari tidak ditemukan');
-        }
-
+        $totalUsers = User::where('role', '!=', 'admin')->count();
         $votedUsers = $pemilu->voting()->distinct('user_id')->count();
+        $notVotedUsers = $totalUsers - $votedUsers;
+
         $votesPerClass = Kelas::withCount([
             'user as votes_count' => fn($q) => $q->whereHas('voting', fn($q) => $q->where('pemilu_id', $pemilu->id))
-        ])->get();
+        ])->get()->map(fn($kelas) => [
+            'name' => $kelas->name,
+            'votes_count' => $kelas->votes_count
+        ]);
 
-        $pdf = Pdf::loadView('export.export-result', compact([
-            'kandidat',
-            'votedUsers',
-            'votesPerClass'
-        ]));
-        return $pdf->download('Hasil ' . $pemilu->name . '.pdf');
+
+        return response()->json([
+            'total_users' => $totalUsers,
+            'pie_charts' => [
+                'voted' => $votedUsers,
+                'not_voted' => $notVotedUsers,
+            ],
+            'bar_charts' => [
+                'labels' => $labels,
+                'data' => $data
+            ],
+            'votes_per_class' => $votesPerClass,
+        ]);
+    }
+
+    public function dataVoteLogs($slug)
+    {
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        if (!$pemilu) {
+            return response()->json(['message' => 'Pemilu not found'], 404);
+        }
+
+        $logs = VoteLogs::where('pemilu_id', $pemilu->id)->with(['user:id,fullname', 'pemilu:id,name'])->get();
+        return response()->json([
+            'name' => $pemilu->name,
+            'voteLogs' => $logs
+        ]);
     }
 }

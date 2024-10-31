@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\API\ClassController;
 use App\Http\Controllers\API\PemiluController;
-use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +20,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/class/{id}', [ClassController::class, 'getClass']);
-Route::get('/user/{id}', [UserController::class, 'getUser']);
-Route::get('/pemilu/{slug}/', [PemiluController::class, 'getPemilu']);
-Route::get('/pemilu/{slug}/kandidat/{id}', [PemiluController::class, 'getKandidat']);
-Route::get('/pemilu/{slug}/result', [PemiluController::class, 'getResultVoting']);
-Route::get('/pemilu/{slug}/vote-logs', [PemiluController::class, 'getVoteLogs']);

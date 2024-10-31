@@ -202,7 +202,7 @@
     </script>
     <script>
         const edit = (slug, id) => {
-            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/kandidat/${id}`, (data) => {
+            $.getJSON(`${window.location.origin}/admin/manage/pemilu/${slug}/kandidat/${id}/data`, (data) => {
                 const updateUrl = `{{ route('admin.manage.pemilu.kandidat.update', [':slug', ':id']) }}`
                 $('#editKandidatForm').attr('action', updateUrl.replace(':slug', slug).replace(':id', id))
 

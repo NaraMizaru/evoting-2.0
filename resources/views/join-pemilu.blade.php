@@ -3,7 +3,7 @@
 
 @push('css')
     {{-- Custom CSS for This Page --}}
-    <link rel="stylesheet" href="{{asset('css/users/JoinPemilu.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/users/JoinPemilu.css') }}">
 @endpush
 
 @section('content')
@@ -21,7 +21,7 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col">
-                                                <h5 class="card-title pt-2 text-primary">{{ $item->description }}</h5>
+                                                <h5 class="card-title pt-2 text-primary">Kandidat {{ $loop->iteration }}</h5>
                                             </div>
                                             <div class="ml-auto pt-1">
                                                 <button onclick="visiMisi('{{ $pemilu->slug }}', '{{ $item->id }}')"
@@ -59,7 +59,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <textarea class="form-control" style="cursor: no-drop" cols="30" rows="20" id="visionMissionParagraph" readonly></textarea>
+                        <textarea class="form-control" style="cursor: no-drop" cols="30" rows="20" id="visionMissionParagraph"
+                            readonly></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -98,7 +99,7 @@
     {{-- Custom JS for This Page --}}
     <script>
         const visiMisi = (slug, id) => {
-            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/kandidat/${id}`, (data) => {
+            $.getJSON(`${window.location.origin}/user/pemilu/${slug}/kandidat/${id}/data`, (data) => {
                 $('#visionMissionParagraph').val(data.vision_mission)
                 $('#visionMissionModalLabel').text(data.name)
 

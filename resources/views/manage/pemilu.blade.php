@@ -253,7 +253,9 @@
                                                                 <th>Kelas</th>
                                                                 <th>Jumlah Yang Vote</th>
                                                                 <th class="text-right">
-                                                                    <a href="" class="btn btn-danger" id="exportResultPdf"><i class="fa-regular fa-file-pdf"></i></a>
+                                                                    <a href="" class="btn btn-danger"
+                                                                        id="exportResultPdf"><i
+                                                                            class="fa-regular fa-file-pdf"></i></a>
                                                                 </th>
                                                             </tr>
                                                         </thead>
@@ -351,7 +353,7 @@
     </script>
     <script>
         const edit = (slug) => {
-            $.getJSON(`${window.location.origin}/api/pemilu/${slug}`, (data) => {
+            $.getJSON(`${window.location.origin}/admin/manage/pemilu/${slug}/data`, (data) => {
                 const updateUrl = '{{ route('admin.manage.pemilu.edit', ':slug') }}'
                 $('#edit-pemilu-form').attr('action', updateUrl.replace(':slug', slug));
 
@@ -398,7 +400,7 @@
     </script>
     <script>
         const voteLogs = (slug) => {
-            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/vote-logs`, (data) => {
+            $.getJSON(`${window.location.origin}/admin/manage/pemilu/${slug}/vote-logs/data`, (data) => {
                 $('#voteLogsTitle').text(data.name)
 
                 $('#voteLogsTableBody').empty();
@@ -519,7 +521,7 @@
                 });
             }
 
-            $.getJSON(`${window.location.origin}/api/pemilu/${slug}/result`, (data) => {
+            $.getJSON(`${window.location.origin}/admin/manage/pemilu/${slug}/result/data`, (data) => {
                 const exportUrl = `{{ route('admin.manage.pemilu.export.result', ':slug') }}`
                 $('#exportResultPdf').attr('href', exportUrl.replace(':slug', slug))
 
@@ -527,7 +529,7 @@
                 pieChart(data.pie_charts)
                 barChart(data.bar_charts);
 
-                $('#resultTableBody').empty();    
+                $('#resultTableBody').empty();
                 data.votes_per_class.map((kelas, i) => {
                     $('<tr>').appendTo('#resultTableBody').append(
                         `<td class="text-center">${i + 1}</td>`,

@@ -160,4 +160,11 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'User berhasil dihapus');
     }
+
+    public function dataUser($id)
+    {
+        $user = User::where('id', $id)->first();
+
+        return response()->json($user);
+    }
 }

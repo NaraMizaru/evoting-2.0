@@ -417,7 +417,7 @@
     </script>
     <script>
         const edit = (id) => {
-            $.getJSON(`${window.location.origin}/api/user/${id}`, (data) => {
+            $.getJSON(`${window.location.origin}/admin/manage/user/${id}/data`, (data) => {
                 const updateUrl = `{{ route('admin.manage.user.update', ':id') }}`
 
                 $('#editUserForm').attr('action', updateUrl.replace(':id', id));

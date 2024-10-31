@@ -123,4 +123,11 @@ class ClassController extends Controller
 
         return redirect()->back()->with('success', 'Kelas berhasil dihapus');
     }
+
+    public function dataClass($id)
+    {
+        $class = Kelas::where('id', $id)->first();
+
+        return response()->json($class);
+    }
 }
