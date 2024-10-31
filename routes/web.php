@@ -26,13 +26,17 @@ Route::get('/helloworld', function () {
     return 'helloworld';
 });
 
-Route::get('/login', [AuthController::class, 'indexLogin'])->name('view.login');
-Route::post('/login', [AuthController::class, 'login'])->name('post.login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('post.logout')->middleware('auth');
-Route::get('/profile/me', [ProfileController::class, 'profile'])->name('profile')->middleware('auth');
-Route::post('/update/profile/me', [ProfileController::class, 'updateProfile'])->name('profile.update')->middleware('auth');
-Route::post('/update-image/profile/me', [ProfileController::class, 'updateProfileImage'])->name('profile.update.image')->middleware('auth');
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'indexLogin')->name('view.login');
+    Route::post('/login', 'login')->name('post.login');
+    Route::post('/logout', 'logout')->name('post.logout')->middleware('auth');
+});
 
+Route::controller(ProfileController::class)->group(function () {
+    Route::get('/profile/me', 'profile')->name('profile')->middleware('auth');
+    Route::post('/update/profile/me', 'updateProfile')->name('profile.update')->middleware('auth');
+    Route::post('/update-image/profile/me', 'updateProfileImage')->name('profile.update.image')->middleware('auth');
+});
 
 Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], function () {
     Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('admin.dashboard');
