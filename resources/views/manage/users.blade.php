@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="{{ asset('vendor/DataTables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/select2/dist/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/select2/dist/css/select2-bootstrap-5-theme.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/admin/users.css') }}">
 @endpush
 
 @section('content')
