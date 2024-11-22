@@ -126,7 +126,52 @@ class PemiluController extends Controller
         return redirect()->back()->with('success', 'Pemilu berhasil dihapus');
     }
 
-    public function dataPemilu($slug)
+    public function data(Request $request)
+    {
+        $length = intval($request->input('length', 15));
+        $start = intval($request->input('start', 0));
+        $search = $request->input('search');
+        $columns = $request->input('columns');
+        $order = $request->input('order');
+
+        $data = Pemilu::query();
+
+        if (!empty($order)) {
+            $order = $order[0];
+            $orderBy = $order['column'];
+            $orderDir = $order['dir'];
+
+            if (isset($columns[$orderBy]['data'])) {
+                $data->orderBy($columns[$orderBy]['data'], $orderDir);
+            } else {
+                $data->orderBy('name', 'asc');
+            }
+        } else {
+            $data->orderBy('name', 'asc');
+        }
+
+        $count = $data->count();
+        $countFiltered = $count;
+
+        if (!empty($search['value'])) {
+            $data->where('fullname', 'LIKE', '%' . $search['value'] . '%');
+            $countFiltered = $data->count();
+        }
+
+        $data = $data->skip($start)->take($length)->get();
+
+        $response = [
+            "draw" => intval($request->input('draw', 1)),
+            "recordsTotal" => $count,
+            "recordsFiltered" => $countFiltered,
+            "limit" => $length,
+            "data" => $data
+        ];
+
+        return response()->json($response);
+    }
+
+    public function dataBySlug($slug)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
 

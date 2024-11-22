@@ -161,7 +161,97 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'User berhasil dihapus');
     }
 
-    public function dataUser($id)
+    public function data(Request $request)
+    {
+        $length = intval($request->input('length', 15));
+        $start = intval($request->input('start', 0));
+        $search = $request->input('search');
+        $columns = $request->input('columns');
+        $order = $request->input('order');
+
+        $data = User::query();
+
+        if (!empty($order)) {
+            $order = $order[0];
+            $orderBy = $order['column'];
+            $orderDir = $order['dir'];
+
+            if (isset($columns[$orderBy]['data'])) {
+                $data->orderBy($columns[$orderBy]['data'], $orderDir)->where('role', '!=', 'admin')->with('kelas');
+            } else {
+                $data->orderBy('fullname', 'asc')->where('role', '!=', 'admin')->with('kelas');
+            }
+        } else {
+            $data->orderBy('fullname', 'asc')->where('role', '!=', 'admin')->with('kelas');
+        }
+
+        $count = $data->count();
+        $countFiltered = $count;
+
+        if (!empty($search['value'])) {
+            $data->where('fullname', 'LIKE', '%' . $search['value'] . '%');
+            $countFiltered = $data->count();
+        }
+
+        $data = $data->skip($start)->take($length)->get();
+
+        $response = [
+            "draw" => intval($request->input('draw', 1)),
+            "recordsTotal" => $count,
+            "recordsFiltered" => $countFiltered,
+            "limit" => $length,
+            "data" => $data
+        ];
+
+        return response()->json($response);
+    }
+
+    public function dataAdmin(Request $request)
+    {
+        $length = intval($request->input('length', 15));
+        $start = intval($request->input('start', 0));
+        $search = $request->input('search');
+        $columns = $request->input('columns');
+        $order = $request->input('order');
+
+        $data = User::query();
+
+        if (!empty($order)) {
+            $order = $order[0];
+            $orderBy = $order['column'];
+            $orderDir = $order['dir'];
+
+            if (isset($columns[$orderBy]['data'])) {
+                $data->orderBy($columns[$orderBy]['data'], $orderDir)->where('role', 'admin');
+            } else {
+                $data->orderBy('fullname', 'asc')->where('role', 'admin');
+            }
+        } else {
+            $data->orderBy('fullname', 'asc')->where('role', 'admin');
+        }
+
+        $count = $data->count();
+        $countFiltered = $count;
+
+        if (!empty($search['value'])) {
+            $data->where('fullname', 'LIKE', '%' . $search['value'] . '%');
+            $countFiltered = $data->count();
+        }
+
+        $data = $data->skip($start)->take($length)->get();
+
+        $response = [
+            "draw" => intval($request->input('draw', 1)),
+            "recordsTotal" => $count,
+            "recordsFiltered" => $countFiltered,
+            "limit" => $length,
+            "data" => $data
+        ];
+
+        return response()->json($response);
+    }
+
+    public function dataById($id)
     {
         $user = User::where('id', $id)->first();
 

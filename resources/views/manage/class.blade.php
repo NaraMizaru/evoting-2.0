@@ -52,22 +52,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($kelas as $item)
-                                <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->slug }}</td>
-                                    <td>
-                                        <button onclick="edit({{ $item->id }})" type="button"
-                                            class="btn btn-primary"><i class="fa-regular fa-edit"></i></button>
-                                        <a href="{{ route('admin.manage.class.delete', $item->slug) }}"
-                                            class="btn btn-danger" data-confirm-delete="true"><i
-                                                class="fa-regular fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -151,7 +136,8 @@
                         <div class="form-group">
                             <label for="table">Contoh Table</label>
                             <span class="text-danger">*Tidak di beri header</span>
-                            <a href="{{ asset('assets/example-import/Data Kelas (Contoh).xlsx') }}" class="btn btn-danger float-right mb-2"><i class="fa-regular fa-download"></i></a>
+                            <a href="{{ asset('assets/example-import/Data Kelas (Contoh).xlsx') }}"
+                                class="btn btn-danger float-right mb-2"><i class="fa-regular fa-download"></i></a>
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
@@ -182,7 +168,48 @@
     <script>
         $(document).ready(function() {
             $('#table-1').DataTable({
-                responsive: true
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('admin.class.data') }}",
+                    data: function(e) {
+                        return e;
+                    }
+                },
+                order: [
+                    [0, 'desc']
+                ],
+                columns: [{
+                        data: null,
+                        className: 'text-center',
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'name',
+                        orderable: true,
+                    },
+                    {
+                        data: 'slug',
+                        orderable: false,
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            const deleteUrl = `{{ route('admin.manage.class.delete', ':slug') }}`;
+
+                            let editBtn =
+                                `<a onclick="edit('${row.id}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
+                            let deleteBtn =
+                                `<a href="${deleteUrl.replace(':slug', row.slug)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
+                            return `${editBtn}${deleteBtn}`;
+                        }
+                    }
+                ],
             });
         });
     </script>

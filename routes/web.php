@@ -49,7 +49,8 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
             Route::post('/{id}/update',  'updateClass')->name('admin.manage.class.update');
             Route::delete('/{slug}/delete',  'deleteClass')->name('admin.manage.class.delete');
 
-            Route::get('/{id}/data', 'dataClass')->name('admin.class.data');
+            Route::get('/data', 'data')->name('admin.class.data');
+            Route::get('/{id}/data', 'dataById')->name('admin.class.data.id');
         });
 
         Route::prefix('user')->controller(UserController::class)->group(function () {
@@ -60,7 +61,9 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
             Route::post('/{id}/update', 'updateUser')->name('admin.manage.user.update');
             Route::delete('/{username}/delete', 'deleteUser')->name('admin.manage.user.delete');
 
-            Route::get('/{id}/data', 'dataUser')->name('admin.user.data');
+            Route::get('/data', 'data')->name('admin.user.data');
+            Route::get('/data/admin', 'dataAdmin')->name('admin.user.data.admin');
+            Route::get('/{id}/data', 'dataById')->name('admin.user.data.id');
         });
 
         Route::prefix('pemilu')->group(function () {
@@ -70,8 +73,8 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
                 Route::post('/{slug}/edit', 'updatePemilu')->name('admin.manage.pemilu.edit');
                 Route::delete('/{slug}/delete', 'deletePemilu')->name('admin.manage.pemilu.delete');
 
-                Route::get('/data', [PemiluController::class, 'data'])->name('admin.pemilus.data');
-                Route::get('/{slug}/data', [PemiluController::class, 'dataPemilu'])->name('admin.pemilu.data');
+                Route::get('/data', [PemiluController::class, 'data'])->name('admin.pemilu.data');
+                Route::get('/{slug}/data', [PemiluController::class, 'dataBySlug'])->name('admin.pemilu.data.slug');
                 Route::get('/{slug}/result/data', [PemiluController::class, 'dataResultVoting'])->name('admin.result.data');
                 Route::get('/{slug}/vote-logs/data', [PemiluController::class, 'dataVoteLogs'])->name('admin.vote-logs.data');
             });
@@ -83,8 +86,8 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
                 Route::post('/{slug}/kandidat/{id}/update', 'updateKandidatPemilu')->name('admin.manage.pemilu.kandidat.update');
                 Route::delete('/{slug}/kandidat/{id}/delete', 'deleteKandidatPemilu')->name('admin.manage.pemilu.kandidat.delete');
 
-                Route::get('/{slug}/kandidat/data', 'data')->name('admin.kandidats.data');
-                Route::get('/{slug}/kandidat/{id}/data', 'dataKandidat')->name('admin.kandidat.data');
+                Route::get('/{slug}/kandidat/data', 'data')->name('admin.kandidat.data');
+                Route::get('/{slug}/kandidat/{id}/data', 'dataById')->name('admin.kandidat.data.id');
             });
         });
     });
@@ -93,7 +96,7 @@ Route::group(['middleware' => ['auth', 'role:admin'], 'prefix' => 'admin'], func
 Route::group(['middleware' => ['auth'], 'prefix' => 'user'], function () {
     Route::get('/dashboard', [DashboarController::class, 'dashboard'])->name('user.dashboard');
 
-    Route::get('/pemilu/{slug}/kandidat/{id}/data', [KandidatController::class, 'dataKandidat'])->name('user.kandidat.data');
+    Route::get('/pemilu/{slug}/kandidat/{id}/data', [KandidatController::class, 'dataById'])->name('user.kandidat.data');
     Route::get('/event/pemilu/{slug}/join', [DashboarController::class, 'joinPemilu'])->name('user.pemilu.join')->middleware('verify.pemilu.password');
     Route::post('/event/pemilu/{slug}/kandidat/{id}/vote', [DashboarController::class, 'votePemilu'])->name('user.pemilu.vote');
     Route::post('/pemilu/{slug}/verify-password/join', [DashboarController::class, 'verifyPasswordJoin'])->name('user.pemilu.verify-password.join');

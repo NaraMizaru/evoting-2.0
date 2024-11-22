@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pemilus', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('slug');
             $table->string('password')->nullable();
             $table->text('description');
             $table->tinyInteger('is_private')->default(0);
             $table->tinyInteger('status')->default(0);
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kandidats', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->text('description');
             $table->string('image');
             $table->text('vision_mission');
-            $table->foreignId('pemilu_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('pemilu_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

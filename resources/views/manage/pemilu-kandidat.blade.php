@@ -189,7 +189,52 @@
     <script>
         $(document).ready(function() {
             $('#table-1').DataTable({
-                responsive: true
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('admin.kandidat.data', ['slug' => $pemilu->slug]) }}",
+                    data: function(e) {
+                        return e;
+                    }
+                },
+                order: [
+                    [0, 'desc']
+                ],
+                columns: [{
+                        data: null,
+                        className: 'text-center',
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'name',
+                        orderable: true,
+                    },
+                    {
+                        data: 'image',
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return `<a type="button" href="{{ asset('storage/upload/' . '${data}') }}" onclick="previewImage(this.href)" class="btn btn-success w-100" data-toggle="modal" data-target="#previewImageModal"><i class="fa-regular fa-eye"></i></a>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            const deleteUrl =
+                                `{{ route('admin.manage.pemilu.kandidat.delete', [':slug', ':id']) }}`;
+
+                            let editBtn =
+                                `<a onclick="edit('${row.pemilu.slug}', '${row.id}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
+                            let deleteBtn =
+                                `<a href="${deleteUrl.replace(':slug', row.pemilu.slug).replace(':id', row.id)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
+                            return `${editBtn}${deleteBtn}`;
+                        }
+                    }
+                ],
             });
         });
     </script>

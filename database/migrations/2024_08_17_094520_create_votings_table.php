@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('votings', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('pemilu_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('kandidat_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('pemilu_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('kandidat_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

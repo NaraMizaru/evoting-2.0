@@ -201,7 +201,57 @@
         $(document).ready(function() {
             $('#table-1').DataTable({
                 responsive: true,
-            })
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('admin.user.data.admin') }}",
+                    data: function(e) {
+                        return e;
+                    }
+                },
+                order: [
+                    [0, 'desc']
+                ],
+                columns: [{
+                        data: null,
+                        className: 'text-center',
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'fullname',
+                        orderable: true,
+                    },
+                    {
+                        data: 'username',
+                        orderable: false,
+                    },
+                    {
+                        data: 'unencrypted_password',
+                        orderable: false,
+                    },
+                    {
+                        data: 'role',
+                        orderable: false,
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            const deleteUrl =
+                                `{{ route('admin.manage.user.delete', ':username') }}`;
+
+                            let editBtn =
+                                `<a onclick="edit('${row.id}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
+                            let deleteBtn =
+                                `<a href="${deleteUrl.replace(':username', row.username)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
+                            return `${editBtn}${deleteBtn}`;
+                        }
+                    }
+                ],
+            });
         });
     </script>
     <script>

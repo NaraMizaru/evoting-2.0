@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered w-100" id="table-1">
+                    <table class="table table-bordered w-100 nowrap" id="table-1">
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
@@ -52,28 +52,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($pemilu as $item)
-                                <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->status ? 'Aktif' : 'Nonaktif' }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.manage.pemilu.kandidat', $item->slug) }}"
-                                            class="btn btn-success"><i class="fa-regular fa-ranking-star"></i></a>
-                                        <button onclick="edit('{{ $item->slug }}')" class="btn btn-primary"><i
-                                                class="fa-regular fa-edit"></i></button>
-                                        <button onclick="result('{{ $item->slug }}')" class="btn btn-warning"><i
-                                                class="fa-regular fa-square-poll-vertical"></i></button>
-                                        <button onclick="voteLogs('{{ $item->slug }}')" class="btn btn-secondary"><i
-                                                class="fa-regular fa-clock-rotate-left"></i></button>
-                                        <a href="{{ route('admin.manage.pemilu.delete', $item->slug) }}"
-                                            data-confirm-delete="true" class="btn btn-danger"><i
-                                                class="fa-regular fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -290,7 +269,7 @@
 
     <div class="modal fade" id="voteLogsModal" tabindex="-1" role="dialog" aria-labelledby="voteLogsModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="voteLogsModalLabel">Vote Logs</h5>
@@ -309,8 +288,7 @@
                                 <th>Nama Pemilu</th>
                                 <th>Waktu Voting</th>
                             </thead>
-                            <tbody id="voteLogsTableBody">
-                            </tbody>
+                            <tbody id="voteLogsTableBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -329,7 +307,61 @@
     <script>
         $(document).ready(function() {
             $('#table-1').DataTable({
-                responsive: true
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                scrollX: true,
+                ajax: {
+                    url: "{{ route('admin.pemilu.data') }}",
+                    data: function(e) {
+                        return e;
+                    }
+                },
+                order: [
+                    [0, 'desc']
+                ],
+                columns: [{
+                        data: null,
+                        className: 'text-center',
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'name',
+                        orderable: true,
+                    },
+                    {
+                        data: 'status',
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            return data ? 'Aktif' : 'Nonaktif';
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row, meta) {
+                            const deleteUrl =
+                                `{{ route('admin.manage.pemilu.delete', ':slug') }}`;
+                            const kandidatUrl =
+                                `{{ route('admin.manage.pemilu.kandidat', ':slug') }}`
+
+                            let kandidatBtn =
+                                `<a href="${kandidatUrl.replace(':slug', row.slug)}" class="btn btn-success mr-1"><i class="fa-regular fa-ranking-star"></i></a>`
+                            let editBtn =
+                                `<a onclick="edit('${row.slug}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
+                            let resultBtn =
+                                `<button onclick="result('${row.slug}')" class="btn btn-warning mr-1"><i class="fa-regular fa-square-poll-vertical"></i></button>`
+                            let voteLogs =
+                                `<button onclick="voteLogs('${row.slug}')" class="btn btn-secondary mr-1"><i class="fa-regular fa-clock-rotate-left"></i></button>`
+                            let deleteBtn =
+                                `<a href="${deleteUrl.replace(':slug', row.slug)}" class="btn btn-danger" data-confirm-delete="true"><i class="fa-regular fa-trash"></i></a>`;
+                            return `${kandidatBtn}${editBtn}${resultBtn}${voteLogs}${deleteBtn}`;
+                        }
+                    }
+                ],
             });
 
             $('#add-radio-private-yes, #add-radio-private-no').on('change', function() {

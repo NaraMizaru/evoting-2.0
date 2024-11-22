@@ -159,7 +159,54 @@ class KandidatController extends Controller
         return $pdf->download('Hasil ' . $pemilu->name . '.pdf');
     }
 
-    public function dataKandidat($slug, $id)
+    public function data(Request $request, $slug)
+    {
+        $length = intval($request->input('length', 15));
+        $start = intval($request->input('start', 0));
+        $search = $request->input('search');
+        $columns = $request->input('columns');
+        $order = $request->input('order');
+
+        $pemilu = Pemilu::where('slug', $slug)->first();
+
+        $data = Kandidat::query();
+
+        if (!empty($order)) {
+            $order = $order[0];
+            $orderBy = $order['column'];
+            $orderDir = $order['dir'];
+
+            if (isset($columns[$orderBy]['data'])) {
+                $data->orderBy($columns[$orderBy]['data'], $orderDir)->where('pemilu_id', $pemilu->id)->with('pemilu');
+            } else {
+                $data->orderBy('name', 'asc')->where('pemilu_id', $pemilu->id)->with('pemilu');
+            }
+        } else {
+            $data->orderBy('name', 'asc')->where('pemilu_id', $pemilu->id)->with('pemilu');
+        }
+
+        $count = $data->count();
+        $countFiltered = $count;
+
+        if (!empty($search['value'])) {
+            $data->where('fullname', 'LIKE', '%' . $search['value'] . '%');
+            $countFiltered = $data->count();
+        }
+
+        $data = $data->skip($start)->take($length)->get();
+
+        $response = [
+            "draw" => intval($request->input('draw', 1)),
+            "recordsTotal" => $count,
+            "recordsFiltered" => $countFiltered,
+            "limit" => $length,
+            "data" => $data
+        ];
+
+        return response()->json($response);
+    }
+
+    public function dataById($slug, $id)
     {
         $pemilu = Pemilu::where('slug', $slug)->first();
 
