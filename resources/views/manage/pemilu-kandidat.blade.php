@@ -149,6 +149,7 @@
                         </div>
                         <div class="form-group">
                             <label for="image">Foto Kandidat</label>
+                            <p class="text-danger">*Jika tidak ingin mengubah, jangan di isi</p>
                             <input type="file" name="image" id="image" class="form-control">
                         </div>
                     </div>

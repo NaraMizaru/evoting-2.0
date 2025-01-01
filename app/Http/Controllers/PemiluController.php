@@ -134,6 +134,7 @@ class PemiluController extends Controller
         $columns = $request->input('columns');
         $order = $request->input('order');
 
+        $user = Auth::user();
         $data = Pemilu::query();
 
         if (!empty($order)) {
@@ -144,17 +145,17 @@ class PemiluController extends Controller
             if (isset($columns[$orderBy]['data'])) {
                 $data->orderBy($columns[$orderBy]['data'], $orderDir);
             } else {
-                $data->orderBy('name', 'asc');
+                $data->orderBy('name', 'asc')->where('user_id', $user->id);
             }
         } else {
-            $data->orderBy('name', 'asc');
+            $data->orderBy('name', 'asc')->where('user_id', $user->id);
         }
 
         $count = $data->count();
         $countFiltered = $count;
 
         if (!empty($search['value'])) {
-            $data->where('fullname', 'LIKE', '%' . $search['value'] . '%');
+            $data->where('name', 'LIKE', '%' . $search['value'] . '%');
             $countFiltered = $data->count();
         }
 

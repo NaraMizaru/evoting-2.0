@@ -382,17 +382,22 @@
                     },
                     {
                         data: 'kelas.name',
-                        orderable: true,
+                        orderable: false,
+                        render: function(data, type, row) {
+                            return data ? data : 'N/A';
+                        }
                     },
                     {
                         data: 'role',
+                        className: 'text-capitalize',
                         orderable: true,
                     },
                     {
                         data: null,
                         orderable: false,
                         render: function(data, type, row, meta) {
-                            const deleteUrl = `{{ route('admin.manage.user.delete', ':username') }}`;
+                            const deleteUrl =
+                                `{{ route('admin.manage.user.delete', ':username') }}`;
 
                             let editBtn =
                                 `<a onclick="edit('${row.id}')" class="btn btn-primary mr-1"><i class="fa-regular fa-edit"></i></a>`;
