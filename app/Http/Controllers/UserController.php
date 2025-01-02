@@ -169,7 +169,7 @@ class UserController extends Controller
         $columns = $request->input('columns');
         $order = $request->input('order');
 
-        $data = User::query();
+        $data = User::query()->orderBy('kelas_id', 'asc');
 
         if (!empty($order)) {
             $order = $order[0];
